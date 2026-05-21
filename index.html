@@ -7,37 +7,71 @@
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
+  <div class="grain"></div>
+
   <main class="app">
     <section class="hero">
       <p class="eyebrow">32HourGroup</p>
       <h1>Cycle Journal</h1>
-      <p>Track Creation, Maintenance, Reflection, Connection, and Rest without pressure.</p>
+      <p class="subhead">A quieter way to track your rhythm across Creation, Maintenance, Reflection, Connection, and Rest.</p>
     </section>
 
-    <section class="card">
-      <h2>New Cycle Entry</h2>
+    <section class="reflection-card">
+      <p class="small-label">Tonight’s Reflection</p>
+      <blockquote id="dailyReflection">Stillness restores what urgency consumes.</blockquote>
+    </section>
 
-      <label>Cycle Date
-        <input id="cycleDate" type="date" />
-      </label>
+    <section class="panel">
+      <div class="panel-heading">
+        <div>
+          <p class="small-label">Cycle Entry</p>
+          <h2>Notice without judgment.</h2>
+        </div>
+      </div>
 
-      <label>How did this cycle feel?
-        <select id="cycleFeel">
-          <option>Grounded</option>
-          <option>Balanced</option>
-          <option>Rushed</option>
-          <option>Fragmented</option>
-          <option>Incomplete</option>
-          <option>Complete</option>
-        </select>
-      </label>
+      <div class="form-grid">
+        <label>Cycle Date
+          <input id="cycleDate" type="date" />
+        </label>
 
-      <div class="domains">
-        <div><span>Creation</span><input id="creation" type="range" min="0" max="5" value="3"><b id="creationVal">3</b></div>
-        <div><span>Maintenance</span><input id="maintenance" type="range" min="0" max="5" value="3"><b id="maintenanceVal">3</b></div>
-        <div><span>Reflection</span><input id="reflection" type="range" min="0" max="5" value="3"><b id="reflectionVal">3</b></div>
-        <div><span>Connection</span><input id="connection" type="range" min="0" max="5" value="3"><b id="connectionVal">3</b></div>
-        <div><span>Rest</span><input id="rest" type="range" min="0" max="5" value="3"><b id="restVal">3</b></div>
+        <label>Cycle Feeling
+          <select id="cycleFeel">
+            <option>Grounded</option>
+            <option>Balanced</option>
+            <option>Rushed</option>
+            <option>Fragmented</option>
+            <option>Incomplete</option>
+            <option>Complete</option>
+          </select>
+        </label>
+      </div>
+
+      <div class="domain-grid">
+        <div class="domain-row">
+          <span>Creation</span>
+          <input id="creation" type="range" min="0" max="5" value="3" />
+          <strong id="creationVal">3</strong>
+        </div>
+        <div class="domain-row">
+          <span>Maintenance</span>
+          <input id="maintenance" type="range" min="0" max="5" value="3" />
+          <strong id="maintenanceVal">3</strong>
+        </div>
+        <div class="domain-row">
+          <span>Reflection</span>
+          <input id="reflection" type="range" min="0" max="5" value="3" />
+          <strong id="reflectionVal">3</strong>
+        </div>
+        <div class="domain-row">
+          <span>Connection</span>
+          <input id="connection" type="range" min="0" max="5" value="3" />
+          <strong id="connectionVal">3</strong>
+        </div>
+        <div class="domain-row">
+          <span>Rest</span>
+          <input id="rest" type="range" min="0" max="5" value="3" />
+          <strong id="restVal">3</strong>
+        </div>
       </div>
 
       <label>What did you notice?
@@ -52,14 +86,21 @@
         <textarea id="intention" placeholder="What will you protect, release, or complete?"></textarea>
       </label>
 
-      <button id="saveBtn">Save Entry</button>
+      <div class="actions">
+        <button id="saveBtn">Save Entry</button>
+        <button class="secondary" id="exportBtn">Export</button>
+        <button class="danger" id="clearBtn">Clear</button>
+      </div>
     </section>
 
-    <section class="card">
-      <h2>Past Entries</h2>
+    <section class="panel">
+      <div class="panel-heading">
+        <div>
+          <p class="small-label">History</p>
+          <h2>Past Cycles</h2>
+        </div>
+      </div>
       <div id="entries"></div>
-      <button class="secondary" id="exportBtn">Export JSON</button>
-      <button class="danger" id="clearBtn">Clear All</button>
     </section>
   </main>
 

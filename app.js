@@ -1,5 +1,18 @@
 const ids = ["creation", "maintenance", "reflection", "connection", "rest"];
 
+const reflections = [
+  "Stillness restores what urgency consumes.",
+  "A complete cycle does not mean everything is finished. It means everything was honored.",
+  "Rest is not a reward. It is part of the work.",
+  "You are not behind. You are practicing.",
+  "Fewer things done fully can change the whole rhythm.",
+  "Repair is not punishment. It is restoration.",
+  "Attention is life. Spend it with care."
+];
+
+document.getElementById("dailyReflection").textContent =
+  reflections[new Date().getDate() % reflections.length];
+
 document.getElementById("cycleDate").value = new Date().toISOString().slice(0, 10);
 
 ids.forEach(id => {
@@ -21,7 +34,7 @@ function renderEntries() {
   const container = document.getElementById("entries");
 
   if (!entries.length) {
-    container.innerHTML = "<p>No entries yet. Start with one honest cycle.</p>";
+    container.innerHTML = "<p class='empty'>No entries yet. Start with one honest cycle.</p>";
     return;
   }
 
@@ -29,11 +42,11 @@ function renderEntries() {
     <article class="entry">
       <small>${entry.date} • ${entry.feel}</small>
       <div class="scores">
-        <span class="score">Creation: ${entry.scores.creation}</span>
-        <span class="score">Maintenance: ${entry.scores.maintenance}</span>
-        <span class="score">Reflection: ${entry.scores.reflection}</span>
-        <span class="score">Connection: ${entry.scores.connection}</span>
-        <span class="score">Rest: ${entry.scores.rest}</span>
+        <span class="score">Creation ${entry.scores.creation}/5</span>
+        <span class="score">Maintenance ${entry.scores.maintenance}/5</span>
+        <span class="score">Reflection ${entry.scores.reflection}/5</span>
+        <span class="score">Connection ${entry.scores.connection}/5</span>
+        <span class="score">Rest ${entry.scores.rest}/5</span>
       </div>
       <p><strong>Noticed:</strong> ${entry.noticed || "—"}</p>
       <p><strong>Repair:</strong> ${entry.repair || "—"}</p>
