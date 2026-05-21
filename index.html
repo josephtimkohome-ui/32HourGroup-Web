@@ -1,105 +1,108 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>32Hour Cycle Journal</title>
-  <link rel="stylesheet" href="styles.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <div class="grain"></div>
+  <div class="ambient"></div>
 
-  <main class="app">
+  <main class="container">
     <section class="hero">
       <p class="eyebrow">32HourGroup</p>
       <h1>Cycle Journal</h1>
-      <p class="subhead">A quieter way to track your rhythm across Creation, Maintenance, Reflection, Connection, and Rest.</p>
+      <p class="subtext">Track your rhythm without pressure.</p>
     </section>
 
-    <section class="reflection-card">
-      <p class="small-label">Tonight’s Reflection</p>
-      <blockquote id="dailyReflection">Stillness restores what urgency consumes.</blockquote>
+    <section class="surface note">
+      <span class="label">Cycle Note</span>
+      <p id="cycleNote"></p>
     </section>
 
-    <section class="panel">
-      <div class="panel-heading">
+    <section class="surface">
+      <div class="section-header">
         <div>
-          <p class="small-label">Cycle Entry</p>
-          <h2>Notice without judgment.</h2>
+          <span class="label">Quick Entry</span>
+          <h2>Notice the cycle.</h2>
         </div>
       </div>
 
-      <div class="form-grid">
-        <label>Cycle Date
-          <input id="cycleDate" type="date" />
-        </label>
+      <div class="grid">
+        <div class="field">
+          <label>Date</label>
+          <input type="date" id="date">
+        </div>
 
-        <label>Cycle Feeling
-          <select id="cycleFeel">
+        <div class="field">
+          <label>Current Rhythm</label>
+          <select id="mood">
             <option>Grounded</option>
             <option>Balanced</option>
             <option>Rushed</option>
             <option>Fragmented</option>
-            <option>Incomplete</option>
-            <option>Complete</option>
+            <option>Restless</option>
           </select>
-        </label>
+        </div>
       </div>
 
-      <div class="domain-grid">
-        <div class="domain-row">
+      <div class="domains">
+        <div class="domain">
           <span>Creation</span>
-          <input id="creation" type="range" min="0" max="5" value="3" />
-          <strong id="creationVal">3</strong>
+          <input type="range" min="0" max="5" value="3" id="creation">
         </div>
-        <div class="domain-row">
+
+        <div class="domain">
           <span>Maintenance</span>
-          <input id="maintenance" type="range" min="0" max="5" value="3" />
-          <strong id="maintenanceVal">3</strong>
+          <input type="range" min="0" max="5" value="3" id="maintenance">
         </div>
-        <div class="domain-row">
+
+        <div class="domain">
           <span>Reflection</span>
-          <input id="reflection" type="range" min="0" max="5" value="3" />
-          <strong id="reflectionVal">3</strong>
+          <input type="range" min="0" max="5" value="3" id="reflection">
         </div>
-        <div class="domain-row">
+
+        <div class="domain">
           <span>Connection</span>
-          <input id="connection" type="range" min="0" max="5" value="3" />
-          <strong id="connectionVal">3</strong>
+          <input type="range" min="0" max="5" value="3" id="connection">
         </div>
-        <div class="domain-row">
+
+        <div class="domain">
           <span>Rest</span>
-          <input id="rest" type="range" min="0" max="5" value="3" />
-          <strong id="restVal">3</strong>
+          <input type="range" min="0" max="5" value="3" id="rest">
         </div>
       </div>
 
-      <label>What did you notice?
-        <textarea id="noticed" placeholder="Patterns, wins, friction, urgency..."></textarea>
-      </label>
-
-      <label>What needs repair next cycle?
-        <textarea id="repair" placeholder="One small repair is enough."></textarea>
-      </label>
-
-      <label>Next cycle intention
-        <textarea id="intention" placeholder="What will you protect, release, or complete?"></textarea>
-      </label>
-
-      <div class="actions">
-        <button id="saveBtn">Save Entry</button>
-        <button class="secondary" id="exportBtn">Export</button>
-        <button class="danger" id="clearBtn">Clear</button>
+      <div class="field">
+        <label>Observation</label>
+        <textarea id="observation" placeholder="What did you notice?"></textarea>
       </div>
+
+      <div class="field">
+        <label>Repair</label>
+        <textarea id="repair" placeholder="What needs attention next cycle?"></textarea>
+      </div>
+
+      <div class="field">
+        <label>Intention</label>
+        <textarea id="intention" placeholder="What will you protect next?"></textarea>
+      </div>
+
+      <button id="saveBtn">Save Cycle</button>
     </section>
 
-    <section class="panel">
-      <div class="panel-heading">
+    <section class="surface">
+      <div class="section-header">
         <div>
-          <p class="small-label">History</p>
+          <span class="label">Archive</span>
           <h2>Past Cycles</h2>
         </div>
       </div>
+
       <div id="entries"></div>
     </section>
   </main>

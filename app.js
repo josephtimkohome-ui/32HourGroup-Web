@@ -1,104 +1,61 @@
-const ids = ["creation", "maintenance", "reflection", "connection", "rest"];
-
 const reflections = [
   "Stillness restores what urgency consumes.",
-  "A complete cycle does not mean everything is finished. It means everything was honored.",
-  "Rest is not a reward. It is part of the work.",
-  "You are not behind. You are practicing.",
-  "Fewer things done fully can change the whole rhythm.",
-  "Repair is not punishment. It is restoration.",
-  "Attention is life. Spend it with care."
+  "Rest is part of the cycle, not a reward.",
+  "A slower rhythm often reveals more clarity.",
+  "Repair is not failure. It is maintenance.",
+  "The goal is sustainability, not exhaustion."
 ];
 
-document.getElementById("dailyReflection").textContent =
+document.getElementById("cycleNote").textContent =
   reflections[new Date().getDate() % reflections.length];
 
-document.getElementById("cycleDate").value = new Date().toISOString().slice(0, 10);
+document.getElementById("date").value =
+  new Date().toISOString().slice(0,10);
 
-ids.forEach(id => {
-  const slider = document.getElementById(id);
-  const value = document.getElementById(id + "Val");
-  slider.addEventListener("input", () => value.textContent = slider.value);
-});
-
-function getEntries() {
-  return JSON.parse(localStorage.getItem("cycleEntries") || "[]");
+function getEntries(){
+  return JSON.parse(localStorage.getItem("cycle_entries") || "[]");
 }
 
-function saveEntries(entries) {
-  localStorage.setItem("cycleEntries", JSON.stringify(entries));
+function saveEntries(entries){
+  localStorage.setItem("cycle_entries", JSON.stringify(entries));
 }
 
-function renderEntries() {
+function renderEntries(){
   const entries = getEntries();
   const container = document.getElementById("entries");
 
-  if (!entries.length) {
-    container.innerHTML = "<p class='empty'>No entries yet. Start with one honest cycle.</p>";
+  if(!entries.length){
+    container.innerHTML = "<p style='color:#888'>No cycles recorded yet.</p>";
     return;
   }
 
   container.innerHTML = entries.map(entry => `
-    <article class="entry">
-      <small>${entry.date} • ${entry.feel}</small>
-      <div class="scores">
-        <span class="score">Creation ${entry.scores.creation}/5</span>
-        <span class="score">Maintenance ${entry.scores.maintenance}/5</span>
-        <span class="score">Reflection ${entry.scores.reflection}/5</span>
-        <span class="score">Connection ${entry.scores.connection}/5</span>
-        <span class="score">Rest ${entry.scores.rest}/5</span>
-      </div>
-      <p><strong>Noticed:</strong> ${entry.noticed || "—"}</p>
-      <p><strong>Repair:</strong> ${entry.repair || "—"}</p>
-      <p><strong>Intention:</strong> ${entry.intention || "—"}</p>
-    </article>
+    <div class="entry">
+      <small>${entry.date} • ${entry.mood}</small>
+      <p><strong>Observation:</strong> ${entry.observation}</p>
+      <p><strong>Repair:</strong> ${entry.repair}</p>
+      <p><strong>Intention:</strong> ${entry.intention}</p>
+    </div>
   `).join("");
 }
 
 document.getElementById("saveBtn").addEventListener("click", () => {
-  const entry = {
-    id: crypto.randomUUID(),
-    date: document.getElementById("cycleDate").value,
-    feel: document.getElementById("cycleFeel").value,
-    scores: {
-      creation: document.getElementById("creation").value,
-      maintenance: document.getElementById("maintenance").value,
-      reflection: document.getElementById("reflection").value,
-      connection: document.getElementById("connection").value,
-      rest: document.getElementById("rest").value,
-    },
-    noticed: document.getElementById("noticed").value.trim(),
-    repair: document.getElementById("repair").value.trim(),
-    intention: document.getElementById("intention").value.trim(),
-    createdAt: new Date().toISOString()
-  };
-
   const entries = getEntries();
-  entries.unshift(entry);
-  saveEntries(entries);
 
-  document.getElementById("noticed").value = "";
+  entries.unshift({
+    date: document.getElementById("date").value,
+    mood: document.getElementById("mood").value,
+    observation: document.getElementById("observation").value,
+    repair: document.getElementById("repair").value,
+    intention: document.getElementById("intention").value
+  });
+
+  saveEntries(entries);
+  renderEntries();
+
+  document.getElementById("observation").value = "";
   document.getElementById("repair").value = "";
   document.getElementById("intention").value = "";
-
-  renderEntries();
-});
-
-document.getElementById("exportBtn").addEventListener("click", () => {
-  const blob = new Blob([JSON.stringify(getEntries(), null, 2)], { type: "application/json" });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = "32hour-cycle-journal.json";
-  a.click();
-  URL.revokeObjectURL(url);
-});
-
-document.getElementById("clearBtn").addEventListener("click", () => {
-  if (confirm("Clear all journal entries from this browser?")) {
-    localStorage.removeItem("cycleEntries");
-    renderEntries();
-  }
 });
 
 renderEntries();
