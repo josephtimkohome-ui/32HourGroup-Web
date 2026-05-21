@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>32Hour Cycle Journal</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <main class="app">
+    <section class="hero">
+      <p class="eyebrow">32HourGroup</p>
+      <h1>Cycle Journal</h1>
+      <p>Track Creation, Maintenance, Reflection, Connection, and Rest without pressure.</p>
+    </section>
+
+    <section class="card">
+      <h2>New Cycle Entry</h2>
+
+      <label>Cycle Date
+        <input id="cycleDate" type="date" />
+      </label>
+
+      <label>How did this cycle feel?
+        <select id="cycleFeel">
+          <option>Grounded</option>
+          <option>Balanced</option>
+          <option>Rushed</option>
+          <option>Fragmented</option>
+          <option>Incomplete</option>
+          <option>Complete</option>
+        </select>
+      </label>
+
+      <div class="domains">
+        <div><span>Creation</span><input id="creation" type="range" min="0" max="5" value="3"><b id="creationVal">3</b></div>
+        <div><span>Maintenance</span><input id="maintenance" type="range" min="0" max="5" value="3"><b id="maintenanceVal">3</b></div>
+        <div><span>Reflection</span><input id="reflection" type="range" min="0" max="5" value="3"><b id="reflectionVal">3</b></div>
+        <div><span>Connection</span><input id="connection" type="range" min="0" max="5" value="3"><b id="connectionVal">3</b></div>
+        <div><span>Rest</span><input id="rest" type="range" min="0" max="5" value="3"><b id="restVal">3</b></div>
+      </div>
+
+      <label>What did you notice?
+        <textarea id="noticed" placeholder="Patterns, wins, friction, urgency..."></textarea>
+      </label>
+
+      <label>What needs repair next cycle?
+        <textarea id="repair" placeholder="One small repair is enough."></textarea>
+      </label>
+
+      <label>Next cycle intention
+        <textarea id="intention" placeholder="What will you protect, release, or complete?"></textarea>
+      </label>
+
+      <button id="saveBtn">Save Entry</button>
+    </section>
+
+    <section class="card">
+      <h2>Past Entries</h2>
+      <div id="entries"></div>
+      <button class="secondary" id="exportBtn">Export JSON</button>
+      <button class="danger" id="clearBtn">Clear All</button>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
