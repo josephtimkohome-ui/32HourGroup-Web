@@ -50,12 +50,21 @@ body{
   margin-bottom:30px;
 }
 .site-logo{
-  width: 110px;
-  height: 110px;
-  object-fit: contain;
-  display: block;
-  margin: 0 auto 20px;
-  border-radius: 50%;
+  width:140px;
+  height:auto;
+  display:block;
+  margin:0 auto 26px;
+  opacity:.98;
+
+  filter:
+    drop-shadow(0 0 18px rgba(214,161,95,.18))
+    drop-shadow(0 0 40px rgba(214,161,95,.08));
+
+  transition:transform .25s ease;
+}
+
+.site-logo:hover{
+  transform:scale(1.03);
 }
 
 .eyebrow,
