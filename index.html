@@ -61,8 +61,11 @@ body::before {
   text-decoration: none;
 }
 .app-nav-logo img {
-  height: 44px;
+  height: 120px;
   width: auto;
+}
+@media (max-width: 600px) {
+  .app-nav-logo img { height: 80px; }
 }
 .app-nav-title {
   font-family: 'DM Mono', monospace;
@@ -94,7 +97,7 @@ body::before {
 /* TAB BAR */
 .tab-bar {
   position: fixed;
-  top: 77px;
+  top: 152px;
   left: 0; right: 0;
   z-index: 99;
   background: var(--dark);
@@ -125,7 +128,7 @@ body::before {
 
 /* MAIN */
 .app-main {
-  padding-top: 133px;
+  padding-top: 200px;
   min-height: 100vh;
 }
 
@@ -659,8 +662,8 @@ body::before {
   .score-btn { width: 28px; height: 28px; font-size: 10px; }
   .app-nav { padding: 12px 16px; }
   .app-nav-logo img { height: 36px; }
-  .tab-bar { top: 69px; }
-  .app-main { padding-top: 121px; }
+  .tab-bar { top: 113px; }
+  .app-main { padding-top: 165px; }
 }
 </style>
 </head>
