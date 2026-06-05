@@ -142,40 +142,42 @@ body::before {
   position: fixed;
   left: 0; right: 0;
   z-index: 98;
-  background: var(--dark);
+  background: #1a1a1a;
+  border-top: 1px solid var(--border);
   border-bottom: 1px solid var(--border);
   display: flex;
 }
-.tab-bar.with-banner { top: 120px; }
-.tab-bar.no-banner { top: 77px; }
+.tab-bar.with-banner { top: 152px; }
+.tab-bar.no-banner { top: 152px; }
 @media (max-width: 600px) {
-  .tab-bar.with-banner { top: 109px; }
-  .tab-bar.no-banner { top: 69px; }
+  .tab-bar.with-banner { top: 130px; }
+  .tab-bar.no-banner { top: 120px; }
 }
 .tab-btn {
   flex: 1;
-  padding: 14px 8px;
+  padding: 20px 8px;
   background: none;
   border: none;
-  border-bottom: 2px solid transparent;
-  font-family: 'DM Mono', monospace;
-  font-size: 10px;
-  letter-spacing: 2px;
+  border-bottom: 3px solid transparent;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 22px;
+  letter-spacing: 3px;
   text-transform: uppercase;
-  color: var(--grey);
+  color: var(--light);
   cursor: pointer;
   transition: all 0.3s;
   -webkit-tap-highlight-color: transparent;
 }
-.tab-btn.active { color: var(--gold); border-bottom-color: var(--gold); }
+.tab-btn.active { color: var(--gold); border-bottom-color: var(--gold); background: rgba(201,168,76,0.06); }
+.tab-btn:hover { color: var(--white); }
 
 /* MAIN */
 .app-main { min-height: 100vh; }
-.app-main.with-banner { padding-top: 168px; }
-.app-main.no-banner { padding-top: 125px; }
+.app-main.with-banner { padding-top: 220px; }
+.app-main.no-banner { padding-top: 220px; }
 @media (max-width: 600px) {
-  .app-main.with-banner { padding-top: 155px; }
-  .app-main.no-banner { padding-top: 115px; }
+  .app-main.with-banner { padding-top: 195px; }
+  .app-main.no-banner { padding-top: 185px; }
 }
 
 /* VIEWS */
@@ -889,9 +891,9 @@ body::before {
 
 <!-- TAB BAR -->
 <div class="tab-bar no-banner" id="tabBar">
-  <button class="tab-btn active" onclick="switchTab('daily', this)">Daily</button>
-  <button class="tab-btn" onclick="switchTab('cycle', this)">Cycle</button>
-  <button class="tab-btn" onclick="switchTab('archive', this)">Archive</button>
+  <button class="tab-btn active" id="tab-daily" onclick="switchTab('daily')">Daily</button>
+  <button class="tab-btn" id="tab-cycle" onclick="switchTab('cycle')">Cycle</button>
+  <button class="tab-btn" id="tab-archive" onclick="switchTab('archive')">Archive</button>
 </div>
 
 <!-- MAIN -->
@@ -1467,11 +1469,11 @@ async function deleteCycleEntry(id) {
 // =====================
 // TABS
 // =====================
-function switchTab(tab, btn) {
+function switchTab(tab) {
   document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
   document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
   document.getElementById('view-' + tab).classList.add('active');
-  btn.classList.add('active');
+  document.getElementById('tab-' + tab).classList.add('active');
   if (tab === 'archive') renderArchiveLists();
 }
 
