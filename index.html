@@ -5,9 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>32 Hour Group — Journal</title>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Bebas+Neue&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
 :root {
   --black: #0a0a0a;
   --dark: #111111;
@@ -18,12 +18,8 @@
   --white: #f0ece4;
   --grey: #888880;
   --light: #d4d0c8;
-  --red: #8b3a3a;
-  --green: #3a6b4a;
 }
-
 html { scroll-behavior: smooth; }
-
 body {
   background: var(--black);
   color: var(--white);
@@ -31,7 +27,6 @@ body {
   min-height: 100vh;
   overflow-x: hidden;
 }
-
 body::before {
   content: '';
   position: fixed;
@@ -60,13 +55,8 @@ body::before {
   gap: 12px;
   text-decoration: none;
 }
-.app-nav-logo img {
-  height: 120px;
-  width: auto;
-}
-@media (max-width: 600px) {
-  .app-nav-logo img { height: 80px; }
-}
+.app-nav-logo img { height: 120px; width: auto; }
+@media (max-width: 600px) { .app-nav-logo img { height: 80px; } }
 .app-nav-title {
   font-family: 'DM Mono', monospace;
   font-size: 10px;
@@ -74,11 +64,7 @@ body::before {
   text-transform: uppercase;
   color: var(--grey);
 }
-.app-nav-right {
-  display: flex;
-  align-items: center;
-  gap: 24px;
-}
+.app-nav-right { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
 .nav-back-link {
   font-family: 'DM Mono', monospace;
   font-size: 10px;
@@ -87,61 +73,262 @@ body::before {
   color: var(--grey);
   text-decoration: none;
   transition: color 0.3s;
-  display: flex;
-  align-items: center;
-  gap: 6px;
 }
-.nav-back-link::before { content: '←'; }
 .nav-back-link:hover { color: var(--gold); }
+.nav-user-info {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 2px;
+  color: var(--gold);
+  text-transform: uppercase;
+}
+.nav-auth-btn {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  background: var(--gold);
+  color: var(--black);
+  border: none;
+  padding: 8px 16px;
+  cursor: pointer;
+  transition: all 0.3s;
+  -webkit-tap-highlight-color: transparent;
+}
+.nav-auth-btn:hover { background: var(--white); }
+.nav-auth-btn.ghost {
+  background: transparent;
+  color: var(--grey);
+  border: 1px solid var(--border);
+}
+.nav-auth-btn.ghost:hover { border-color: var(--gold-dim); color: var(--light); }
+
+/* GUEST BANNER */
+.guest-banner {
+  position: fixed;
+  top: 77px; left: 0; right: 0;
+  z-index: 99;
+  background: #1a1400;
+  border-bottom: 1px solid var(--gold-dim);
+  padding: 10px 32px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+}
+.guest-banner-text {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 2px;
+  color: var(--gold-dim);
+  text-transform: uppercase;
+}
+.guest-banner-btn {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  background: var(--gold);
+  color: var(--black);
+  border: none;
+  padding: 6px 14px;
+  cursor: pointer;
+  white-space: nowrap;
+  -webkit-tap-highlight-color: transparent;
+}
 
 /* TAB BAR */
 .tab-bar {
   position: fixed;
-  top: 152px;
   left: 0; right: 0;
-  z-index: 99;
+  z-index: 98;
   background: var(--dark);
   border-bottom: 1px solid var(--border);
   display: flex;
 }
+.tab-bar.with-banner { top: 120px; }
+.tab-bar.no-banner { top: 77px; }
+@media (max-width: 600px) {
+  .tab-bar.with-banner { top: 109px; }
+  .tab-bar.no-banner { top: 69px; }
+}
 .tab-btn {
   flex: 1;
-  padding: 16px;
+  padding: 14px 8px;
   background: none;
   border: none;
+  border-bottom: 2px solid transparent;
   font-family: 'DM Mono', monospace;
-  font-size: 11px;
-  letter-spacing: 3px;
+  font-size: 10px;
+  letter-spacing: 2px;
   text-transform: uppercase;
   color: var(--grey);
   cursor: pointer;
   transition: all 0.3s;
-  border-bottom: 2px solid transparent;
   -webkit-tap-highlight-color: transparent;
 }
-.tab-btn.active {
-  color: var(--gold);
-  border-bottom-color: var(--gold);
-  background: rgba(201,168,76,0.04);
-}
-.tab-btn:hover { color: var(--light); }
+.tab-btn.active { color: var(--gold); border-bottom-color: var(--gold); }
 
 /* MAIN */
-.app-main {
-  padding-top: 200px;
-  min-height: 100vh;
+.app-main { min-height: 100vh; }
+.app-main.with-banner { padding-top: 168px; }
+.app-main.no-banner { padding-top: 125px; }
+@media (max-width: 600px) {
+  .app-main.with-banner { padding-top: 155px; }
+  .app-main.no-banner { padding-top: 115px; }
 }
 
 /* VIEWS */
 .view { display: none; padding: 32px; max-width: 800px; margin: 0 auto; }
 .view.active { display: block; }
 
-/* =====================
-   DAILY JOURNAL
-===================== */
-.journal-header {
-  margin-bottom: 32px;
+/* AUTH SCREEN */
+.auth-screen {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: var(--black);
+  z-index: 200;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 24px;
 }
+.auth-screen.open { display: flex; }
+.auth-box {
+  background: var(--card);
+  border: 1px solid var(--border);
+  padding: 48px 40px;
+  max-width: 440px;
+  width: 100%;
+  text-align: center;
+}
+.auth-logo { height: 80px; margin: 0 auto 24px; display: block; }
+.auth-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 40px;
+  letter-spacing: 3px;
+  color: var(--white);
+  margin-bottom: 8px;
+}
+.auth-subtitle {
+  font-size: 16px;
+  font-weight: 300;
+  font-style: italic;
+  color: var(--grey);
+  margin-bottom: 36px;
+  line-height: 1.5;
+}
+.auth-divider {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin: 24px 0;
+}
+.auth-divider::before, .auth-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+.auth-divider span {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 2px;
+  color: var(--grey);
+  text-transform: uppercase;
+}
+.auth-input {
+  width: 100%;
+  background: var(--black);
+  border: 1px solid var(--border);
+  color: var(--white);
+  font-family: 'DM Mono', monospace;
+  font-size: 13px;
+  padding: 14px 16px;
+  outline: none;
+  transition: border-color 0.3s;
+  margin-bottom: 8px;
+  letter-spacing: 1px;
+}
+.auth-input:focus { border-color: var(--gold-dim); }
+.auth-input::placeholder { color: var(--grey); }
+.auth-btn-google {
+  width: 100%;
+  background: var(--white);
+  color: var(--black);
+  border: none;
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  padding: 16px;
+  cursor: pointer;
+  transition: all 0.3s;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  -webkit-tap-highlight-color: transparent;
+}
+.auth-btn-google:hover { background: var(--light); }
+.auth-btn-email {
+  width: 100%;
+  background: var(--gold);
+  color: var(--black);
+  border: none;
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  padding: 16px;
+  cursor: pointer;
+  transition: all 0.3s;
+  margin-bottom: 8px;
+  -webkit-tap-highlight-color: transparent;
+}
+.auth-btn-email:hover { background: var(--light); }
+.auth-btn-guest {
+  width: 100%;
+  background: transparent;
+  color: var(--grey);
+  border: 1px solid var(--border);
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  padding: 14px;
+  cursor: pointer;
+  transition: all 0.3s;
+  -webkit-tap-highlight-color: transparent;
+}
+.auth-btn-guest:hover { border-color: var(--gold-dim); color: var(--light); }
+.auth-toggle {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 2px;
+  color: var(--gold);
+  cursor: pointer;
+  margin-top: 16px;
+  display: inline-block;
+  text-decoration: underline;
+  background: none;
+  border: none;
+  -webkit-tap-highlight-color: transparent;
+}
+.auth-error {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 2px;
+  color: #a05050;
+  text-transform: uppercase;
+  margin-top: 12px;
+  min-height: 16px;
+}
+
+/* JOURNAL */
+.journal-header { margin-bottom: 32px; }
 .journal-date-display {
   font-family: 'DM Mono', monospace;
   font-size: 10px;
@@ -157,7 +344,6 @@ body::before {
   color: var(--white);
   line-height: 1;
 }
-
 .prompt-card {
   background: var(--card);
   border: 1px solid var(--border);
@@ -180,7 +366,6 @@ body::before {
   color: var(--light);
   line-height: 1.5;
 }
-
 .journal-textarea {
   width: 100%;
   min-height: 280px;
@@ -199,7 +384,6 @@ body::before {
 }
 .journal-textarea::placeholder { color: var(--grey); font-style: italic; }
 .journal-textarea:focus { border-color: var(--gold-dim); }
-
 .char-count {
   font-family: 'DM Mono', monospace;
   font-size: 10px;
@@ -208,13 +392,7 @@ body::before {
   text-align: right;
   margin-bottom: 20px;
 }
-
-.btn-row {
-  display: flex;
-  gap: 12px;
-  margin-bottom: 48px;
-  flex-wrap: wrap;
-}
+.btn-row { display: flex; gap: 12px; margin-bottom: 48px; flex-wrap: wrap; }
 .btn-save {
   font-family: 'DM Mono', monospace;
   font-size: 11px;
@@ -243,8 +421,6 @@ body::before {
   -webkit-tap-highlight-color: transparent;
 }
 .btn-secondary:hover { border-color: var(--gold-dim); color: var(--light); }
-
-/* SAVED ENTRIES */
 .entries-section-title {
   font-family: 'DM Mono', monospace;
   font-size: 10px;
@@ -300,12 +476,228 @@ body::before {
   -webkit-box-orient: vertical;
 }
 
-/* ENTRY MODAL */
+/* CYCLE */
+.cycle-section { margin-bottom: 36px; }
+.cycle-section-title {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 16px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--border);
+}
+.rhythm-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 2px;
+}
+@media (max-width: 600px) { .rhythm-grid { grid-template-columns: repeat(3, 1fr); } }
+.rhythm-btn {
+  background: var(--card);
+  border: 1px solid var(--border);
+  color: var(--grey);
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  padding: 12px 6px;
+  cursor: pointer;
+  transition: all 0.3s;
+  text-align: center;
+  -webkit-tap-highlight-color: transparent;
+}
+.rhythm-btn.selected { background: var(--gold); color: var(--black); border-color: var(--gold); }
+.domains-grid { display: flex; flex-direction: column; gap: 2px; }
+.domain-row {
+  background: var(--card);
+  border: 1px solid var(--border);
+  padding: 14px 20px;
+  display: grid;
+  grid-template-columns: 130px 1fr auto;
+  gap: 12px;
+  align-items: center;
+}
+@media (max-width: 600px) { .domain-row { grid-template-columns: 90px 1fr auto; } }
+.domain-row-name {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 20px;
+  letter-spacing: 2px;
+  color: var(--white);
+}
+.domain-score-btns { display: flex; gap: 3px; }
+.score-btn {
+  width: 30px; height: 30px;
+  background: var(--black);
+  border: 1px solid var(--border);
+  color: var(--grey);
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex; align-items: center; justify-content: center;
+  -webkit-tap-highlight-color: transparent;
+}
+.score-btn.selected-low { background: #5a3030; border-color: #7a4040; color: var(--light); }
+.score-btn.selected-mid { background: #4a4a20; border-color: #6a6a30; color: var(--light); }
+.score-btn.selected-high { background: #2a5a3a; border-color: #3a7a4a; color: var(--light); }
+.domain-score-display {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 26px;
+  color: var(--gold);
+  letter-spacing: 2px;
+  min-width: 28px;
+  text-align: right;
+}
+.cycle-textarea {
+  width: 100%;
+  min-height: 100px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  color: var(--white);
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 18px;
+  font-weight: 300;
+  line-height: 1.8;
+  padding: 18px 20px;
+  resize: vertical;
+  outline: none;
+  transition: border-color 0.3s;
+  margin-bottom: 4px;
+}
+.cycle-textarea::placeholder { color: var(--grey); font-style: italic; }
+.cycle-textarea:focus { border-color: var(--gold-dim); }
+.input-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--grey);
+  margin-bottom: 8px;
+  display: block;
+}
+.sufficiency-block {
+  background: var(--dark);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--gold);
+  padding: 20px 24px;
+  margin-bottom: 4px;
+}
+.sufficiency-prefix {
+  font-size: 16px;
+  font-weight: 300;
+  font-style: italic;
+  color: var(--grey);
+  margin-bottom: 8px;
+}
+.sufficiency-input {
+  width: 100%;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--border);
+  color: var(--white);
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 18px;
+  font-style: italic;
+  font-weight: 300;
+  padding: 8px 0;
+  outline: none;
+  transition: border-color 0.3s;
+}
+.sufficiency-input::placeholder { color: var(--grey); }
+.sufficiency-input:focus { border-bottom-color: var(--gold); }
+.protect-release-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2px;
+  margin-top: 2px;
+}
+@media (max-width: 600px) { .protect-release-grid { grid-template-columns: 1fr; } }
+.text-input {
+  width: 100%;
+  background: var(--card);
+  border: 1px solid var(--border);
+  color: var(--white);
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 17px;
+  padding: 12px 16px;
+  outline: none;
+  transition: border-color 0.3s;
+}
+.text-input::placeholder { color: var(--grey); font-style: italic; }
+.text-input:focus { border-color: var(--gold-dim); }
+
+/* ARCHIVE */
+.archive-tabs { display: flex; gap: 2px; margin-bottom: 32px; }
+.archive-tab {
+  flex: 1;
+  padding: 12px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-bottom: 2px solid transparent;
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--grey);
+  cursor: pointer;
+  transition: all 0.3s;
+  -webkit-tap-highlight-color: transparent;
+}
+.archive-tab.active { color: var(--gold); border-bottom-color: var(--gold); }
+.cycle-entry-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  padding: 24px;
+  cursor: pointer;
+  transition: border-color 0.3s;
+  margin-bottom: 2px;
+}
+.cycle-entry-card:hover { border-color: var(--gold-dim); }
+.cycle-entry-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 14px;
+}
+.cycle-entry-date {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+.cycle-entry-rhythm {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  background: var(--border);
+  color: var(--light);
+  padding: 4px 10px;
+}
+.cycle-domain-scores { display: flex; gap: 6px; flex-wrap: wrap; }
+.domain-score-pill {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  background: var(--black);
+  border: 1px solid var(--border);
+  color: var(--grey);
+}
+.domain-score-pill.high { border-color: #3a7a4a; color: #6aaa7a; }
+.domain-score-pill.mid { border-color: #6a6a30; color: #aaaa60; }
+.domain-score-pill.low { border-color: #7a4040; color: #aa7070; }
+
+/* MODAL */
 .modal-overlay {
   display: none;
   position: fixed;
   inset: 0;
-  background: rgba(10,10,10,0.95);
+  background: rgba(10,10,10,0.96);
   z-index: 500;
   overflow-y: auto;
   padding: 80px 24px 40px;
@@ -347,233 +739,42 @@ body::before {
   color: var(--light);
   white-space: pre-wrap;
 }
-
-/* =====================
-   CYCLE JOURNAL
-===================== */
-.cycle-section { margin-bottom: 36px; }
-.cycle-section-title {
-  font-family: 'DM Mono', monospace;
-  font-size: 10px;
-  letter-spacing: 4px;
-  text-transform: uppercase;
-  color: var(--gold);
-  margin-bottom: 16px;
-  padding-bottom: 10px;
-  border-bottom: 1px solid var(--border);
-}
-
-/* RHYTHM SELECTOR */
-.rhythm-grid {
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 2px;
-  margin-bottom: 8px;
-}
-.rhythm-btn {
-  background: var(--card);
-  border: 1px solid var(--border);
-  color: var(--grey);
-  font-family: 'DM Mono', monospace;
-  font-size: 9px;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-  padding: 12px 6px;
-  cursor: pointer;
-  transition: all 0.3s;
-  text-align: center;
-  -webkit-tap-highlight-color: transparent;
-}
-.rhythm-btn:hover { border-color: var(--gold-dim); color: var(--light); }
-.rhythm-btn.selected {
-  background: var(--gold);
-  color: var(--black);
-  border-color: var(--gold);
-}
-
-/* DOMAIN SCORES */
-.domains-grid {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-.domain-row {
-  background: var(--card);
-  border: 1px solid var(--border);
-  padding: 16px 20px;
-  display: grid;
-  grid-template-columns: 140px 1fr auto;
-  gap: 16px;
-  align-items: center;
-  transition: border-color 0.3s;
-}
-.domain-row:hover { border-color: var(--border); }
-.domain-row-name {
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: 20px;
-  letter-spacing: 2px;
-  color: var(--white);
-}
-.domain-score-btns {
-  display: flex;
-  gap: 4px;
-}
-.score-btn {
-  width: 32px;
-  height: 32px;
-  background: var(--black);
-  border: 1px solid var(--border);
-  color: var(--grey);
-  font-family: 'DM Mono', monospace;
-  font-size: 11px;
-  cursor: pointer;
-  transition: all 0.2s;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  -webkit-tap-highlight-color: transparent;
-}
-.score-btn:hover { border-color: var(--gold-dim); }
-.score-btn.selected {
-  background: var(--gold);
-  border-color: var(--gold);
-  color: var(--black);
-}
-.score-btn.selected-low {
-  background: #5a3030;
-  border-color: #7a4040;
-  color: var(--light);
-}
-.score-btn.selected-mid {
-  background: #4a4a20;
-  border-color: #6a6a30;
-  color: var(--light);
-}
-.score-btn.selected-high {
-  background: #2a5a3a;
-  border-color: #3a7a4a;
-  color: var(--light);
-}
-.domain-score-display {
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: 28px;
-  color: var(--gold);
-  letter-spacing: 2px;
-  min-width: 32px;
-  text-align: right;
-}
-
-/* CYCLE TEXTAREA */
-.cycle-textarea {
-  width: 100%;
-  min-height: 120px;
-  background: var(--card);
-  border: 1px solid var(--border);
-  color: var(--white);
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 18px;
-  font-weight: 300;
-  line-height: 1.8;
-  padding: 20px;
-  resize: vertical;
-  outline: none;
-  transition: border-color 0.3s;
-  margin-bottom: 4px;
-}
-.cycle-textarea::placeholder { color: var(--grey); font-style: italic; }
-.cycle-textarea:focus { border-color: var(--gold-dim); }
-
-.input-label {
-  font-family: 'DM Mono', monospace;
-  font-size: 10px;
-  letter-spacing: 3px;
-  text-transform: uppercase;
-  color: var(--grey);
-  margin-bottom: 8px;
-  display: block;
-}
-
-/* SUFFICIENCY STATEMENT */
-.sufficiency-block {
-  background: var(--dark);
-  border: 1px solid var(--border);
-  border-left: 3px solid var(--gold);
-  padding: 20px 24px;
-  margin-bottom: 4px;
-}
-.sufficiency-prefix {
-  font-size: 17px;
-  font-weight: 300;
-  font-style: italic;
-  color: var(--grey);
-  margin-bottom: 8px;
-}
-.sufficiency-input {
-  width: 100%;
-  background: transparent;
-  border: none;
-  border-bottom: 1px solid var(--border);
-  color: var(--white);
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 19px;
-  font-style: italic;
-  font-weight: 300;
-  padding: 8px 0;
-  outline: none;
-  transition: border-color 0.3s;
-}
-.sufficiency-input::placeholder { color: var(--grey); }
-.sufficiency-input:focus { border-bottom-color: var(--gold); }
-
-/* CYCLE ENTRIES */
-.cycle-entry-card {
-  background: var(--card);
-  border: 1px solid var(--border);
-  padding: 24px;
-  cursor: pointer;
-  transition: border-color 0.3s;
-}
-.cycle-entry-card:hover { border-color: var(--gold-dim); }
-.cycle-entry-header {
+.cycle-modal-domain {
   display: flex;
   justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: 16px;
-}
-.cycle-entry-date {
-  font-family: 'DM Mono', monospace;
-  font-size: 10px;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  color: var(--gold);
-}
-.cycle-entry-rhythm {
-  font-family: 'DM Mono', monospace;
-  font-size: 9px;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  background: var(--border);
-  color: var(--light);
-  padding: 4px 10px;
-}
-.cycle-domain-scores {
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
-}
-.domain-score-pill {
-  font-family: 'DM Mono', monospace;
-  font-size: 9px;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-  padding: 4px 10px;
+  align-items: center;
+  padding: 10px 16px;
   background: var(--black);
   border: 1px solid var(--border);
-  color: var(--grey);
+  margin-bottom: 2px;
 }
-.domain-score-pill.high { border-color: #3a7a4a; color: #6aaa7a; }
-.domain-score-pill.mid { border-color: #6a6a30; color: #aaaa60; }
-.domain-score-pill.low { border-color: #7a4040; color: #aa7070; }
+.cycle-modal-domain-name {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 18px;
+  letter-spacing: 2px;
+  color: var(--white);
+}
+.cycle-modal-domain-score {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 24px;
+  color: var(--gold);
+}
+.cycle-modal-field { margin-bottom: 20px; }
+.cycle-modal-field-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--gold-dim);
+  margin-bottom: 6px;
+}
+.cycle-modal-field-value {
+  font-size: 18px;
+  font-weight: 300;
+  font-style: italic;
+  color: var(--light);
+  line-height: 1.7;
+}
 
 /* TOAST */
 .toast {
@@ -594,80 +795,78 @@ body::before {
 }
 .toast.show { transform: translateX(-50%) translateY(0); }
 
-/* EMPTY STATE */
-.empty-state {
-  text-align: center;
-  padding: 60px 24px;
-  color: var(--grey);
-}
-.empty-state-icon { font-size: 40px; margin-bottom: 16px; opacity: 0.4; }
-.empty-state-text {
-  font-size: 17px;
-  font-style: italic;
-  font-weight: 300;
-  line-height: 1.6;
-}
-
-/* MODAL CYCLE DETAIL */
-.cycle-modal-domains {
+/* LOADING */
+.loading-screen {
+  position: fixed;
+  inset: 0;
+  background: var(--black);
+  z-index: 9998;
   display: flex;
   flex-direction: column;
-  gap: 2px;
-  margin: 20px 0;
-}
-.cycle-modal-domain {
-  display: flex;
-  justify-content: space-between;
   align-items: center;
-  padding: 10px 16px;
-  background: var(--black);
-  border: 1px solid var(--border);
+  justify-content: center;
+  gap: 24px;
 }
-.cycle-modal-domain-name {
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: 18px;
-  letter-spacing: 2px;
-  color: var(--white);
-}
-.cycle-modal-domain-score {
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: 24px;
-  color: var(--gold);
-  letter-spacing: 2px;
-}
-.cycle-modal-field {
-  margin-bottom: 20px;
-}
-.cycle-modal-field-label {
+.loading-logo { height: 100px; }
+.loading-text {
   font-family: 'DM Mono', monospace;
-  font-size: 9px;
-  letter-spacing: 3px;
+  font-size: 10px;
+  letter-spacing: 4px;
   text-transform: uppercase;
-  color: var(--gold-dim);
-  margin-bottom: 8px;
+  color: var(--grey);
+  animation: pulse 1.5s ease infinite;
 }
-.cycle-modal-field-value {
-  font-size: 18px;
-  font-weight: 300;
-  font-style: italic;
-  color: var(--light);
-  line-height: 1.7;
-}
+@keyframes pulse { 0%,100% { opacity: 0.4; } 50% { opacity: 1; } }
 
-/* RESPONSIVE */
+.empty-state { text-align: center; padding: 60px 24px; color: var(--grey); }
+.empty-state-icon { font-size: 40px; margin-bottom: 16px; opacity: 0.4; }
+.empty-state-text { font-size: 17px; font-style: italic; font-weight: 300; line-height: 1.6; }
+
 @media (max-width: 600px) {
   .view { padding: 20px 16px; }
-  .rhythm-grid { grid-template-columns: repeat(3, 1fr); }
-  .domain-row { grid-template-columns: 100px 1fr auto; }
-  .score-btn { width: 28px; height: 28px; font-size: 10px; }
   .app-nav { padding: 12px 16px; }
-  .app-nav-logo img { height: 36px; }
-  .tab-bar { top: 113px; }
-  .app-main { padding-top: 165px; }
+  .guest-banner { padding: 8px 16px; top: 69px; }
+  .modal-content { padding: 28px 20px; }
+  .auth-box { padding: 32px 24px; }
 }
 </style>
 </head>
 <body>
+
+<!-- LOADING -->
+<div class="loading-screen" id="loadingScreen">
+  <img src="/assets/images/logo.png" alt="32 Hour Group" class="loading-logo">
+  <div class="loading-text">Loading your journal...</div>
+</div>
+
+<!-- AUTH SCREEN -->
+<div class="auth-screen" id="authScreen">
+  <div class="auth-box">
+    <img src="/assets/images/logo.png" alt="32 Hour Group" class="auth-logo">
+    <div class="auth-title">Journal</div>
+    <div class="auth-subtitle" id="authSubtitle">Your cycles. Your reflection. Your practice.</div>
+
+    <button class="auth-btn-google" onclick="signInGoogle()">
+      <svg width="18" height="18" viewBox="0 0 18 18"><path fill="#4285F4" d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.716v2.259h2.908c1.702-1.567 2.684-3.875 2.684-6.615z"/><path fill="#34A853" d="M9 18c2.43 0 4.467-.806 5.956-2.184l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332C2.438 15.983 5.482 18 9 18z"/><path fill="#FBBC05" d="M3.964 10.706c-.18-.54-.282-1.117-.282-1.706s.102-1.166.282-1.706V4.962H.957C.347 6.175 0 7.55 0 9s.348 2.825.957 4.038l3.007-2.332z"/><path fill="#EA4335" d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0 5.482 0 2.438 2.017.957 4.962L3.964 7.294C4.672 5.163 6.656 3.58 9 3.58z"/></svg>
+      Continue with Google
+    </button>
+
+    <div class="auth-divider"><span>or</span></div>
+
+    <div id="emailForm">
+      <input type="email" class="auth-input" id="authEmail" placeholder="your@email.com">
+      <input type="password" class="auth-input" id="authPassword" placeholder="password">
+      <button class="auth-btn-email" onclick="signInEmail()" id="emailBtn">Sign In</button>
+      <button class="auth-toggle" onclick="toggleEmailMode()" id="emailToggle">No account? Sign up instead</button>
+    </div>
+
+    <div class="auth-error" id="authError"></div>
+
+    <div class="auth-divider"><span>or</span></div>
+    <button class="auth-btn-guest" onclick="continueAsGuest()">Continue as Guest</button>
+    <div style="font-family:'DM Mono',monospace; font-size:9px; letter-spacing:1px; color:var(--grey); margin-top:10px; line-height:1.5;">Guest entries are saved locally and may be lost if you clear your browser.</div>
+  </div>
+</div>
 
 <!-- NAV -->
 <nav class="app-nav">
@@ -676,171 +875,148 @@ body::before {
     <span class="app-nav-title">Journal</span>
   </a>
   <div class="app-nav-right">
-    <a href="https://32hourgroup.com" class="nav-back-link">Main Site</a>
+    <a href="https://32hourgroup.com" class="nav-back-link">← Main Site</a>
+    <span class="nav-user-info" id="navUserInfo"></span>
+    <button class="nav-auth-btn" id="navAuthBtn" onclick="handleNavAuth()">Sign In</button>
   </div>
 </nav>
 
+<!-- GUEST BANNER -->
+<div class="guest-banner" id="guestBanner" style="display:none;">
+  <span class="guest-banner-text">⚠ Guest Mode — entries saved locally only</span>
+  <button class="guest-banner-btn" onclick="showAuth()">Save to Account</button>
+</div>
+
 <!-- TAB BAR -->
-<div class="tab-bar">
-  <button class="tab-btn active" onclick="switchTab('daily')">Daily Journal</button>
-  <button class="tab-btn" onclick="switchTab('cycle')">Cycle Reflection</button>
-  <button class="tab-btn" onclick="switchTab('archive')">Archive</button>
+<div class="tab-bar no-banner" id="tabBar">
+  <button class="tab-btn active" onclick="switchTab('daily', this)">Daily</button>
+  <button class="tab-btn" onclick="switchTab('cycle', this)">Cycle</button>
+  <button class="tab-btn" onclick="switchTab('archive', this)">Archive</button>
 </div>
 
 <!-- MAIN -->
-<main class="app-main">
+<main class="app-main no-banner" id="appMain">
 
-  <!-- ===================== DAILY JOURNAL ===================== -->
+  <!-- DAILY JOURNAL -->
   <div class="view active" id="view-daily">
-
     <div class="journal-header">
       <div class="journal-date-display" id="todayDate"></div>
       <div class="journal-heading">Daily Journal</div>
     </div>
-
     <div class="prompt-card">
       <div class="prompt-label">Today's Prompt</div>
-      <div class="prompt-text" id="dailyPrompt">Loading...</div>
+      <div class="prompt-text" id="dailyPrompt"></div>
     </div>
-
-    <textarea
-      class="journal-textarea"
-      id="dailyEntry"
-      placeholder="Write freely. This is observation, not evaluation..."
-      oninput="updateCharCount()"
-    ></textarea>
+    <textarea class="journal-textarea" id="dailyEntry" placeholder="Write freely. This is observation, not evaluation..." oninput="updateCharCount()"></textarea>
     <div class="char-count"><span id="charCount">0</span> characters</div>
-
     <div class="btn-row">
       <button class="btn-save" onclick="saveDailyEntry()">Save Entry</button>
       <button class="btn-secondary" onclick="newPrompt()">New Prompt</button>
-      <button class="btn-secondary" onclick="clearDaily()">Clear</button>
+      <button class="btn-secondary" onclick="document.getElementById('dailyEntry').value=''; updateCharCount();">Clear</button>
     </div>
-
     <div class="entries-section-title">Recent Entries</div>
     <div class="entries-list" id="dailyEntriesList"></div>
-
   </div>
 
-  <!-- ===================== CYCLE JOURNAL ===================== -->
+  <!-- CYCLE JOURNAL -->
   <div class="view" id="view-cycle">
-
     <div class="journal-header">
       <div class="journal-date-display" id="cycleDate"></div>
       <div class="journal-heading">Cycle Reflection</div>
     </div>
-
-    <!-- RHYTHM -->
     <div class="cycle-section">
       <div class="cycle-section-title">How Did This Cycle Feel?</div>
       <div class="rhythm-grid">
-        <button class="rhythm-btn" onclick="selectRhythm('Grounded')">Grounded</button>
-        <button class="rhythm-btn" onclick="selectRhythm('Balanced')">Balanced</button>
-        <button class="rhythm-btn" onclick="selectRhythm('Rushed')">Rushed</button>
-        <button class="rhythm-btn" onclick="selectRhythm('Fragmented')">Fragmented</button>
-        <button class="rhythm-btn" onclick="selectRhythm('Restless')">Restless</button>
+        <button class="rhythm-btn" onclick="selectRhythm('Grounded', this)">Grounded</button>
+        <button class="rhythm-btn" onclick="selectRhythm('Balanced', this)">Balanced</button>
+        <button class="rhythm-btn" onclick="selectRhythm('Rushed', this)">Rushed</button>
+        <button class="rhythm-btn" onclick="selectRhythm('Fragmented', this)">Fragmented</button>
+        <button class="rhythm-btn" onclick="selectRhythm('Restless', this)">Restless</button>
       </div>
     </div>
-
-    <!-- DOMAINS -->
     <div class="cycle-section">
       <div class="cycle-section-title">Five Domains Check-In</div>
       <div class="domains-grid" id="domainsGrid"></div>
     </div>
-
-    <!-- REFLECTION FIELDS -->
     <div class="cycle-section">
       <div class="cycle-section-title">Reflection</div>
-
       <label class="input-label">What received your deepest attention?</label>
-      <textarea class="cycle-textarea" id="deepestAttention" placeholder="What did you actually focus on this cycle?" style="min-height:90px;"></textarea>
-
+      <textarea class="cycle-textarea" id="deepestAttention" placeholder="What did you actually focus on this cycle?"></textarea>
       <label class="input-label" style="margin-top:16px;">What needs repair next cycle?</label>
-      <textarea class="cycle-textarea" id="repairNext" placeholder="Repair is not punishment. It is restoration." style="min-height:90px;"></textarea>
-
+      <textarea class="cycle-textarea" id="repairNext" placeholder="Repair is not punishment. It is restoration."></textarea>
       <label class="input-label" style="margin-top:16px;">Where did false urgency appear?</label>
-      <textarea class="cycle-textarea" id="urgencyCheck" placeholder="Where did urgency appear that wasn't truly necessary?" style="min-height:90px;"></textarea>
+      <textarea class="cycle-textarea" id="urgencyCheck" placeholder="Where did urgency appear that wasn't truly necessary?"></textarea>
     </div>
-
-    <!-- SUFFICIENCY STATEMENT -->
     <div class="cycle-section">
       <div class="cycle-section-title">Sufficiency Statement</div>
       <div class="sufficiency-block">
         <div class="sufficiency-prefix">This cycle reminds me that time is sufficient when I…</div>
-        <input
-          type="text"
-          class="sufficiency-input"
-          id="sufficiencyStatement"
-          placeholder="complete the sentence..."
-        >
+        <input type="text" class="sufficiency-input" id="sufficiencyStatement" placeholder="complete the sentence...">
       </div>
     </div>
-
-    <!-- NEXT CYCLE INTENTIONS -->
     <div class="cycle-section">
       <div class="cycle-section-title">Intentions for Next Cycle</div>
       <label class="input-label">Choose no more than three.</label>
       <textarea class="cycle-textarea" id="intentions" placeholder="1.&#10;2.&#10;3." style="min-height:110px;"></textarea>
-
-      <div style="display:grid; grid-template-columns:1fr 1fr; gap:2px; margin-top:2px;">
+      <div class="protect-release-grid">
         <div>
           <label class="input-label" style="margin-top:12px;">One thing to protect</label>
-          <input type="text" class="sufficiency-input" id="protect" placeholder="what will you guard..." style="background:var(--card); border:1px solid var(--border); padding:12px 16px; width:100%; font-family:'Cormorant Garamond',serif; font-size:17px; color:var(--white); outline:none;">
+          <input type="text" class="text-input" id="protect" placeholder="what will you guard...">
         </div>
         <div>
           <label class="input-label" style="margin-top:12px;">One thing to release</label>
-          <input type="text" class="sufficiency-input" id="release" placeholder="what will you let go..." style="background:var(--card); border:1px solid var(--border); padding:12px 16px; width:100%; font-family:'Cormorant Garamond',serif; font-size:17px; color:var(--white); outline:none;">
+          <input type="text" class="text-input" id="release" placeholder="what will you let go...">
         </div>
       </div>
     </div>
-
-    <div class="btn-row" style="margin-top:8px;">
+    <div class="btn-row">
       <button class="btn-save" onclick="saveCycleEntry()">Save Cycle</button>
       <button class="btn-secondary" onclick="clearCycle()">Clear</button>
     </div>
-
   </div>
 
-  <!-- ===================== ARCHIVE ===================== -->
+  <!-- ARCHIVE -->
   <div class="view" id="view-archive">
-
     <div class="journal-header">
       <div class="journal-heading">Archive</div>
     </div>
-
-    <div style="display:flex; gap:2px; margin-bottom:32px;">
-      <button class="tab-btn active" id="archiveDailyBtn" onclick="switchArchive('daily')" style="position:static; border-bottom:2px solid var(--gold); flex:1;">Daily</button>
-      <button class="tab-btn" id="archiveCycleBtn" onclick="switchArchive('cycle')" style="position:static; flex:1;">Cycles</button>
+    <div class="archive-tabs">
+      <button class="archive-tab active" id="archiveDailyBtn" onclick="switchArchive('daily')">Daily Entries</button>
+      <button class="archive-tab" id="archiveCycleBtn" onclick="switchArchive('cycle')">Cycle Reflections</button>
     </div>
-
     <div id="archiveDailyList"></div>
     <div id="archiveCycleList" style="display:none;"></div>
-
   </div>
 
 </main>
 
-<!-- ENTRY MODAL -->
+<!-- MODALS -->
 <div class="modal-overlay" id="entryModal">
   <div class="modal-content">
-    <button class="modal-close" onclick="closeModal()">CLOSE ✕</button>
+    <button class="modal-close" onclick="document.getElementById('entryModal').classList.remove('open')">CLOSE ✕</button>
     <div class="modal-date" id="modalDate"></div>
     <div class="modal-body" id="modalBody"></div>
   </div>
 </div>
 
-<!-- CYCLE MODAL -->
 <div class="modal-overlay" id="cycleModal">
   <div class="modal-content">
-    <button class="modal-close" onclick="closeCycleModal()">CLOSE ✕</button>
+    <button class="modal-close" onclick="document.getElementById('cycleModal').classList.remove('open')">CLOSE ✕</button>
     <div id="cycleModalContent"></div>
   </div>
 </div>
 
-<!-- TOAST -->
 <div class="toast" id="toast"></div>
 
 <script>
+// =====================
+// SUPABASE INIT
+// =====================
+const SUPABASE_URL = 'https://snjjabcmctfptyowpip.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_x9NWmnHRGntDy_DMTq5IJw_H7MbO3iU';
+const { createClient } = supabase;
+const sb = createClient(SUPABASE_URL, SUPABASE_KEY);
+
 // =====================
 // STATE
 // =====================
@@ -863,227 +1039,370 @@ const PROMPTS = [
   "How did your body feel at the end of this cycle?"
 ];
 
-let cycleScores = { Creation: null, Maintenance: null, Reflection: null, Connection: null, Rest: null };
+let currentUser = null;
+let isGuest = false;
+let cycleScores = {};
 let selectedRhythm = null;
-let currentPromptIndex = 0;
+let promptIndex = 0;
+let isSignUp = false;
+
+DOMAINS.forEach(d => cycleScores[d] = null);
 
 // =====================
 // INIT
 // =====================
-document.addEventListener('DOMContentLoaded', () => {
+window.addEventListener('DOMContentLoaded', async () => {
   setDates();
   loadPrompt();
   renderDomains();
-  renderDailyEntries();
-  renderArchiveDailyList();
-  renderArchiveCycleList();
+
+  // Check auth state
+  const { data: { session } } = await sb.auth.getSession();
+  if (session?.user) {
+    await setUser(session.user);
+  } else {
+    // Check if returning guest
+    const guest = localStorage.getItem('32hg_guest_mode');
+    if (guest === 'true') {
+      setGuestMode();
+    } else {
+      showAuth();
+    }
+  }
+
+  // Listen for auth changes
+  sb.auth.onAuthStateChange(async (event, session) => {
+    if (event === 'SIGNED_IN' && session?.user) {
+      await setUser(session.user);
+      hideAuth();
+    } else if (event === 'SIGNED_OUT') {
+      currentUser = null;
+      isGuest = false;
+      showAuth();
+    }
+  });
+
+  document.getElementById('loadingScreen').style.display = 'none';
 });
 
-function setDates() {
-  const now = new Date();
-  const opts = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-  const formatted = now.toLocaleDateString('en-US', opts).toUpperCase();
-  document.getElementById('todayDate').textContent = formatted;
-  document.getElementById('cycleDate').textContent = formatted;
+// =====================
+// AUTH
+// =====================
+async function setUser(user) {
+  currentUser = user;
+  isGuest = false;
+  localStorage.removeItem('32hg_guest_mode');
+  const email = user.email || user.user_metadata?.full_name || 'Signed In';
+  const shortEmail = email.length > 20 ? email.substring(0, 18) + '…' : email;
+  document.getElementById('navUserInfo').textContent = shortEmail;
+  document.getElementById('navAuthBtn').textContent = 'Sign Out';
+  hideBanner();
+  await loadAllEntries();
 }
 
-function loadPrompt() {
-  const saved = localStorage.getItem('32hg_prompt_index');
-  const savedDate = localStorage.getItem('32hg_prompt_date');
-  const today = new Date().toDateString();
-  if (savedDate !== today) {
-    currentPromptIndex = Math.floor(Math.random() * PROMPTS.length);
-    localStorage.setItem('32hg_prompt_index', currentPromptIndex);
-    localStorage.setItem('32hg_prompt_date', today);
+function setGuestMode() {
+  isGuest = true;
+  currentUser = null;
+  localStorage.setItem('32hg_guest_mode', 'true');
+  document.getElementById('navUserInfo').textContent = 'Guest';
+  document.getElementById('navAuthBtn').textContent = 'Sign In';
+  showBanner();
+  renderDailyEntries();
+  renderArchiveLists();
+}
+
+function showAuth() {
+  document.getElementById('authScreen').classList.add('open');
+}
+function hideAuth() {
+  document.getElementById('authScreen').classList.remove('open');
+}
+
+function continueAsGuest() {
+  setGuestMode();
+  hideAuth();
+}
+
+function handleNavAuth() {
+  if (currentUser) {
+    sb.auth.signOut();
   } else {
-    currentPromptIndex = parseInt(saved || 0);
-  }
-  document.getElementById('dailyPrompt').textContent = PROMPTS[currentPromptIndex];
-}
-
-function newPrompt() {
-  currentPromptIndex = (currentPromptIndex + 1) % PROMPTS.length;
-  localStorage.setItem('32hg_prompt_index', currentPromptIndex);
-  document.getElementById('dailyPrompt').textContent = PROMPTS[currentPromptIndex];
-}
-
-// =====================
-// TABS
-// =====================
-function switchTab(tab) {
-  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-  document.getElementById('view-' + tab).classList.add('active');
-  event.target.classList.add('active');
-  if (tab === 'archive') {
-    renderArchiveDailyList();
-    renderArchiveCycleList();
+    showAuth();
   }
 }
 
-function switchArchive(type) {
-  document.getElementById('archiveDailyList').style.display = type === 'daily' ? 'block' : 'none';
-  document.getElementById('archiveCycleList').style.display = type === 'cycle' ? 'block' : 'none';
-  document.getElementById('archiveDailyBtn').classList.toggle('active', type === 'daily');
-  document.getElementById('archiveCycleBtn').classList.toggle('active', type === 'cycle');
-  document.getElementById('archiveDailyBtn').style.borderBottom = type === 'daily' ? '2px solid var(--gold)' : '2px solid transparent';
-  document.getElementById('archiveCycleBtn').style.borderBottom = type === 'cycle' ? '2px solid var(--gold)' : '2px solid transparent';
+async function signInGoogle() {
+  setAuthError('');
+  const { error } = await sb.auth.signInWithOAuth({
+    provider: 'google',
+    options: { redirectTo: window.location.href }
+  });
+  if (error) setAuthError(error.message);
+}
+
+async function signInEmail() {
+  setAuthError('');
+  const email = document.getElementById('authEmail').value.trim();
+  const password = document.getElementById('authPassword').value;
+  if (!email || !password) { setAuthError('Please enter email and password'); return; }
+
+  let result;
+  if (isSignUp) {
+    result = await sb.auth.signUp({ email, password });
+    if (!result.error) showToast('Check your email to confirm');
+  } else {
+    result = await sb.auth.signInWithPassword({ email, password });
+  }
+  if (result.error) setAuthError(result.error.message);
+}
+
+function toggleEmailMode() {
+  isSignUp = !isSignUp;
+  document.getElementById('emailBtn').textContent = isSignUp ? 'Create Account' : 'Sign In';
+  document.getElementById('emailToggle').textContent = isSignUp ? 'Have an account? Sign in' : 'No account? Sign up instead';
+  setAuthError('');
+}
+
+function setAuthError(msg) {
+  document.getElementById('authError').textContent = msg;
+}
+
+function showBanner() {
+  document.getElementById('guestBanner').style.display = 'flex';
+  document.getElementById('tabBar').className = 'tab-bar with-banner';
+  document.getElementById('appMain').className = 'app-main with-banner';
+}
+function hideBanner() {
+  document.getElementById('guestBanner').style.display = 'none';
+  document.getElementById('tabBar').className = 'tab-bar no-banner';
+  document.getElementById('appMain').className = 'app-main no-banner';
+}
+
+// =====================
+// DATA — LOAD
+// =====================
+async function loadAllEntries() {
+  if (!currentUser) return;
+  renderDailyEntries();
+  renderArchiveLists();
+}
+
+async function getDailyEntries() {
+  if (isGuest || !currentUser) {
+    return JSON.parse(localStorage.getItem('32hg_daily') || '[]');
+  }
+  const { data, error } = await sb.from('daily_entries')
+    .select('*')
+    .eq('user_id', currentUser.id)
+    .order('created_at', { ascending: false });
+  if (error) { console.error(error); return []; }
+  return (data || []).map(r => ({
+    id: r.id, date: r.created_at, prompt: r.prompt, text: r.entry
+  }));
+}
+
+async function getCycleEntries() {
+  if (isGuest || !currentUser) {
+    return JSON.parse(localStorage.getItem('32hg_cycles') || '[]');
+  }
+  const { data, error } = await sb.from('cycle_entries')
+    .select('*')
+    .eq('user_id', currentUser.id)
+    .order('created_at', { ascending: false });
+  if (error) { console.error(error); return []; }
+  return (data || []).map(r => ({
+    id: r.id, date: r.created_at, rhythm: r.rhythm,
+    scores: r.scores || {},
+    deepestAttention: r.deepest_attention,
+    repairNext: r.repair_next,
+    urgencyCheck: r.urgency_check,
+    sufficiency: r.sufficiency,
+    intentions: r.intentions,
+    protect: r.protect,
+    release: r.release
+  }));
 }
 
 // =====================
 // DAILY JOURNAL
 // =====================
-function updateCharCount() {
-  const len = document.getElementById('dailyEntry').value.length;
-  document.getElementById('charCount').textContent = len;
+function setDates() {
+  const opts = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+  const d = new Date().toLocaleDateString('en-US', opts).toUpperCase();
+  document.getElementById('todayDate').textContent = d;
+  document.getElementById('cycleDate').textContent = d;
 }
 
-function saveDailyEntry() {
+function loadPrompt() {
+  const today = new Date().toDateString();
+  const savedDate = localStorage.getItem('32hg_prompt_date');
+  if (savedDate !== today) {
+    promptIndex = Math.floor(Math.random() * PROMPTS.length);
+    localStorage.setItem('32hg_prompt_index', promptIndex);
+    localStorage.setItem('32hg_prompt_date', today);
+  } else {
+    promptIndex = parseInt(localStorage.getItem('32hg_prompt_index') || '0');
+  }
+  document.getElementById('dailyPrompt').textContent = PROMPTS[promptIndex];
+}
+
+function newPrompt() {
+  promptIndex = (promptIndex + 1) % PROMPTS.length;
+  localStorage.setItem('32hg_prompt_index', promptIndex);
+  document.getElementById('dailyPrompt').textContent = PROMPTS[promptIndex];
+}
+
+function updateCharCount() {
+  document.getElementById('charCount').textContent = document.getElementById('dailyEntry').value.length;
+}
+
+async function saveDailyEntry() {
   const text = document.getElementById('dailyEntry').value.trim();
   if (!text) { showToast('Nothing to save'); return; }
-  const entries = JSON.parse(localStorage.getItem('32hg_daily') || '[]');
-  entries.unshift({
-    id: Date.now(),
-    date: new Date().toISOString(),
-    prompt: PROMPTS[currentPromptIndex],
-    text
-  });
-  localStorage.setItem('32hg_daily', JSON.stringify(entries));
+
+  if (isGuest || !currentUser) {
+    const entries = JSON.parse(localStorage.getItem('32hg_daily') || '[]');
+    entries.unshift({ id: Date.now(), date: new Date().toISOString(), prompt: PROMPTS[promptIndex], text });
+    localStorage.setItem('32hg_daily', JSON.stringify(entries));
+  } else {
+    const { error } = await sb.from('daily_entries').insert({
+      user_id: currentUser.id,
+      prompt: PROMPTS[promptIndex],
+      entry: text
+    });
+    if (error) { showToast('Error saving'); console.error(error); return; }
+  }
+
   document.getElementById('dailyEntry').value = '';
-  document.getElementById('charCount').textContent = '0';
+  updateCharCount();
   renderDailyEntries();
-  renderArchiveDailyList();
+  renderArchiveLists();
   showToast('Entry saved');
 }
 
-function clearDaily() {
-  document.getElementById('dailyEntry').value = '';
-  document.getElementById('charCount').textContent = '0';
-}
-
-function renderDailyEntries() {
-  const entries = JSON.parse(localStorage.getItem('32hg_daily') || '[]').slice(0, 5);
+async function renderDailyEntries() {
+  const entries = (await getDailyEntries()).slice(0, 5);
   const list = document.getElementById('dailyEntriesList');
   if (!entries.length) {
     list.innerHTML = '<div class="empty-state"><div class="empty-state-icon">✍️</div><p class="empty-state-text">No entries yet. Begin writing.</p></div>';
     return;
   }
-  list.innerHTML = entries.map(e => `
-    <div class="entry-card" onclick="openEntry('${e.id}')">
-      <div class="entry-card-header">
-        <div class="entry-date">${formatDate(e.date)}</div>
-        <button class="entry-delete" onclick="event.stopPropagation(); deleteDailyEntry('${e.id}')">✕</button>
-      </div>
-      <div class="entry-preview">${escHtml(e.text)}</div>
-    </div>
-  `).join('');
+  list.innerHTML = entries.map(e => entryCardHTML(e)).join('');
 }
 
-function renderArchiveDailyList() {
-  const entries = JSON.parse(localStorage.getItem('32hg_daily') || '[]');
-  const list = document.getElementById('archiveDailyList');
-  if (!entries.length) {
-    list.innerHTML = '<div class="empty-state"><div class="empty-state-icon">📓</div><p class="empty-state-text">No daily entries yet.</p></div>';
-    return;
+async function renderArchiveLists() {
+  const daily = await getDailyEntries();
+  const cycles = await getCycleEntries();
+  const dl = document.getElementById('archiveDailyList');
+  const cl = document.getElementById('archiveCycleList');
+
+  if (!daily.length) {
+    dl.innerHTML = '<div class="empty-state"><div class="empty-state-icon">📓</div><p class="empty-state-text">No daily entries yet.</p></div>';
+  } else {
+    dl.innerHTML = '<div class="entries-list">' + daily.map(e => entryCardHTML(e)).join('') + '</div>';
   }
-  list.innerHTML = '<div class="entries-list">' + entries.map(e => `
-    <div class="entry-card" onclick="openEntry('${e.id}')">
-      <div class="entry-card-header">
-        <div class="entry-date">${formatDate(e.date)}</div>
-        <button class="entry-delete" onclick="event.stopPropagation(); deleteDailyEntry('${e.id}')">✕</button>
-      </div>
-      <div class="entry-preview">${escHtml(e.text)}</div>
-    </div>
-  `).join('') + '</div>';
+
+  if (!cycles.length) {
+    cl.innerHTML = '<div class="empty-state"><div class="empty-state-icon">⏳</div><p class="empty-state-text">No cycle reflections yet.</p></div>';
+  } else {
+    cl.innerHTML = cycles.map(e => cycleCardHTML(e)).join('');
+  }
 }
 
-function openEntry(id) {
-  const entries = JSON.parse(localStorage.getItem('32hg_daily') || '[]');
+function entryCardHTML(e) {
+  return `<div class="entry-card" onclick="openEntry('${e.id}')">
+    <div class="entry-card-header">
+      <div class="entry-date">${formatDate(e.date)}</div>
+      <button class="entry-delete" onclick="event.stopPropagation(); deleteDailyEntry('${e.id}')">✕</button>
+    </div>
+    <div class="entry-preview">${escHtml(e.text)}</div>
+  </div>`;
+}
+
+async function openEntry(id) {
+  const entries = await getDailyEntries();
   const e = entries.find(x => x.id == id);
   if (!e) return;
   document.getElementById('modalDate').textContent = formatDate(e.date);
-  document.getElementById('modalBody').innerHTML = `
-    <div style="font-family:'DM Mono',monospace; font-size:10px; letter-spacing:2px; color:var(--gold-dim); margin-bottom:20px; font-style:normal;">${escHtml(e.prompt)}</div>
-    ${escHtml(e.text)}
-  `;
+  document.getElementById('modalBody').innerHTML = `<div style="font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2px;color:var(--gold-dim);margin-bottom:20px;font-style:normal;">${escHtml(e.prompt || '')}</div>${escHtml(e.text)}`;
   document.getElementById('entryModal').classList.add('open');
 }
 
-function closeModal() {
-  document.getElementById('entryModal').classList.remove('open');
-}
-
-function deleteDailyEntry(id) {
-  let entries = JSON.parse(localStorage.getItem('32hg_daily') || '[]');
-  entries = entries.filter(e => e.id != id);
-  localStorage.setItem('32hg_daily', JSON.stringify(entries));
+async function deleteDailyEntry(id) {
+  if (isGuest || !currentUser) {
+    let entries = JSON.parse(localStorage.getItem('32hg_daily') || '[]');
+    entries = entries.filter(e => e.id != id);
+    localStorage.setItem('32hg_daily', JSON.stringify(entries));
+  } else {
+    await sb.from('daily_entries').delete().eq('id', id).eq('user_id', currentUser.id);
+  }
   renderDailyEntries();
-  renderArchiveDailyList();
-  showToast('Entry deleted');
+  renderArchiveLists();
+  showToast('Deleted');
 }
 
 // =====================
 // CYCLE JOURNAL
 // =====================
 function renderDomains() {
-  const grid = document.getElementById('domainsGrid');
-  grid.innerHTML = DOMAINS.map(d => `
+  document.getElementById('domainsGrid').innerHTML = DOMAINS.map(d => `
     <div class="domain-row">
       <div class="domain-row-name">${d}</div>
       <div class="domain-score-btns">
-        ${[0,1,2,3,4,5].map(n => `
-          <button class="score-btn" id="score-${d}-${n}" onclick="setScore('${d}', ${n})">${n}</button>
-        `).join('')}
+        ${[0,1,2,3,4,5].map(n => `<button class="score-btn" id="score-${d}-${n}" onclick="setScore('${d}',${n})">${n}</button>`).join('')}
       </div>
       <div class="domain-score-display" id="score-display-${d}">—</div>
-    </div>
-  `).join('');
+    </div>`).join('');
 }
 
 function setScore(domain, score) {
   cycleScores[domain] = score;
   [0,1,2,3,4,5].forEach(n => {
-    const btn = document.getElementById(`score-${domain}-${n}`);
-    btn.classList.remove('selected', 'selected-low', 'selected-mid', 'selected-high');
+    const b = document.getElementById(`score-${domain}-${n}`);
+    b.className = 'score-btn';
   });
   const btn = document.getElementById(`score-${domain}-${score}`);
-  if (score <= 2) btn.classList.add('selected-low');
-  else if (score <= 3) btn.classList.add('selected-mid');
-  else btn.classList.add('selected-high');
+  btn.classList.add(score <= 2 ? 'selected-low' : score <= 3 ? 'selected-mid' : 'selected-high');
   document.getElementById(`score-display-${domain}`).textContent = score;
 }
 
-function selectRhythm(r) {
+function selectRhythm(r, el) {
   selectedRhythm = r;
-  document.querySelectorAll('.rhythm-btn').forEach(b => {
-    b.classList.toggle('selected', b.textContent === r);
-  });
+  document.querySelectorAll('.rhythm-btn').forEach(b => b.classList.remove('selected'));
+  el.classList.add('selected');
 }
 
-function saveCycleEntry() {
-  const entries = JSON.parse(localStorage.getItem('32hg_cycles') || '[]');
+async function saveCycleEntry() {
   const entry = {
-    id: Date.now(),
-    date: new Date().toISOString(),
     rhythm: selectedRhythm,
     scores: { ...cycleScores },
-    deepestAttention: document.getElementById('deepestAttention').value.trim(),
-    repairNext: document.getElementById('repairNext').value.trim(),
-    urgencyCheck: document.getElementById('urgencyCheck').value.trim(),
+    deepest_attention: document.getElementById('deepestAttention').value.trim(),
+    repair_next: document.getElementById('repairNext').value.trim(),
+    urgency_check: document.getElementById('urgencyCheck').value.trim(),
     sufficiency: document.getElementById('sufficiencyStatement').value.trim(),
     intentions: document.getElementById('intentions').value.trim(),
     protect: document.getElementById('protect').value.trim(),
     release: document.getElementById('release').value.trim(),
   };
-  entries.unshift(entry);
-  localStorage.setItem('32hg_cycles', JSON.stringify(entries));
-  renderArchiveCycleList();
+
+  if (isGuest || !currentUser) {
+    const entries = JSON.parse(localStorage.getItem('32hg_cycles') || '[]');
+    entries.unshift({ id: Date.now(), date: new Date().toISOString(), ...entry,
+      deepestAttention: entry.deepest_attention, repairNext: entry.repair_next,
+      urgencyCheck: entry.urgency_check });
+    localStorage.setItem('32hg_cycles', JSON.stringify(entries));
+  } else {
+    const { error } = await sb.from('cycle_entries').insert({ user_id: currentUser.id, ...entry });
+    if (error) { showToast('Error saving'); console.error(error); return; }
+  }
+
   clearCycle();
+  renderArchiveLists();
   showToast('Cycle saved');
 }
 
 function clearCycle() {
-  cycleScores = { Creation: null, Maintenance: null, Reflection: null, Connection: null, Rest: null };
+  DOMAINS.forEach(d => cycleScores[d] = null);
   selectedRhythm = null;
   renderDomains();
   document.querySelectorAll('.rhythm-btn').forEach(b => b.classList.remove('selected'));
@@ -1091,74 +1410,76 @@ function clearCycle() {
     .forEach(id => { document.getElementById(id).value = ''; });
 }
 
-function renderArchiveCycleList() {
-  const entries = JSON.parse(localStorage.getItem('32hg_cycles') || '[]');
-  const list = document.getElementById('archiveCycleList');
-  if (!entries.length) {
-    list.innerHTML = '<div class="empty-state"><div class="empty-state-icon">⏳</div><p class="empty-state-text">No cycle reflections yet.</p></div>';
-    return;
-  }
-  list.innerHTML = '<div class="entries-list">' + entries.map(e => `
-    <div class="cycle-entry-card" onclick="openCycleEntry('${e.id}')">
-      <div class="cycle-entry-header">
-        <div class="cycle-entry-date">${formatDate(e.date)}</div>
-        <div style="display:flex; gap:8px; align-items:center;">
-          ${e.rhythm ? `<div class="cycle-entry-rhythm">${e.rhythm}</div>` : ''}
-          <button class="entry-delete" onclick="event.stopPropagation(); deleteCycleEntry('${e.id}')">✕</button>
-        </div>
-      </div>
-      <div class="cycle-domain-scores">
-        ${DOMAINS.map(d => {
-          const s = e.scores[d];
-          const cls = s === null ? '' : s >= 4 ? 'high' : s >= 3 ? 'mid' : 'low';
-          return `<div class="domain-score-pill ${cls}">${d} ${s !== null ? s : '—'}</div>`;
-        }).join('')}
+function cycleCardHTML(e) {
+  return `<div class="cycle-entry-card" onclick="openCycleEntry('${e.id}')">
+    <div class="cycle-entry-header">
+      <div class="cycle-entry-date">${formatDate(e.date)}</div>
+      <div style="display:flex;gap:8px;align-items:center;">
+        ${e.rhythm ? `<div class="cycle-entry-rhythm">${e.rhythm}</div>` : ''}
+        <button class="entry-delete" onclick="event.stopPropagation();deleteCycleEntry('${e.id}')">✕</button>
       </div>
     </div>
-  `).join('') + '</div>';
+    <div class="cycle-domain-scores">
+      ${DOMAINS.map(d => {
+        const s = e.scores ? e.scores[d] : null;
+        const cls = s === null || s === undefined ? '' : s >= 4 ? 'high' : s >= 3 ? 'mid' : 'low';
+        return `<div class="domain-score-pill ${cls}">${d} ${s !== null && s !== undefined ? s : '—'}</div>`;
+      }).join('')}
+    </div>
+  </div>`;
 }
 
-function openCycleEntry(id) {
-  const entries = JSON.parse(localStorage.getItem('32hg_cycles') || '[]');
+async function openCycleEntry(id) {
+  const entries = await getCycleEntries();
   const e = entries.find(x => x.id == id);
   if (!e) return;
   document.getElementById('cycleModalContent').innerHTML = `
-    <div style="font-family:'DM Mono',monospace; font-size:10px; letter-spacing:3px; color:var(--gold); margin-bottom:4px;">${formatDate(e.date)}</div>
-    ${e.rhythm ? `<div style="font-family:'DM Mono',monospace; font-size:10px; letter-spacing:2px; color:var(--grey); margin-bottom:24px; text-transform:uppercase;">${e.rhythm}</div>` : ''}
-    <div style="font-family:'Bebas Neue',sans-serif; font-size:32px; letter-spacing:2px; color:var(--white); margin-bottom:20px;">Five Domains</div>
-    <div class="cycle-modal-domains">
-      ${DOMAINS.map(d => `
-        <div class="cycle-modal-domain">
-          <div class="cycle-modal-domain-name">${d}</div>
-          <div class="cycle-modal-domain-score">${e.scores[d] !== null ? e.scores[d] : '—'}</div>
-        </div>
-      `).join('')}
-    </div>
-    ${e.deepestAttention ? `<div class="cycle-modal-field"><div class="cycle-modal-field-label">Deepest Attention</div><div class="cycle-modal-field-value">${escHtml(e.deepestAttention)}</div></div>` : ''}
-    ${e.repairNext ? `<div class="cycle-modal-field"><div class="cycle-modal-field-label">Repair Next Cycle</div><div class="cycle-modal-field-value">${escHtml(e.repairNext)}</div></div>` : ''}
-    ${e.urgencyCheck ? `<div class="cycle-modal-field"><div class="cycle-modal-field-label">Urgency Check</div><div class="cycle-modal-field-value">${escHtml(e.urgencyCheck)}</div></div>` : ''}
-    ${e.sufficiency ? `<div class="cycle-modal-field" style="background:var(--dark); border-left:3px solid var(--gold); padding:16px 20px;"><div class="cycle-modal-field-label">Sufficiency Statement</div><div class="cycle-modal-field-value">Time is sufficient when I ${escHtml(e.sufficiency)}</div></div>` : ''}
-    ${e.intentions ? `<div class="cycle-modal-field"><div class="cycle-modal-field-label">Next Cycle Intentions</div><div class="cycle-modal-field-value">${escHtml(e.intentions)}</div></div>` : ''}
-    ${(e.protect || e.release) ? `
-      <div style="display:grid; grid-template-columns:1fr 1fr; gap:2px;">
+    <div style="font-family:'DM Mono',monospace;font-size:10px;letter-spacing:3px;color:var(--gold);margin-bottom:4px;">${formatDate(e.date)}</div>
+    ${e.rhythm ? `<div style="font-family:'DM Mono',monospace;font-size:10px;color:var(--grey);margin-bottom:24px;text-transform:uppercase;letter-spacing:2px;">${e.rhythm}</div>` : ''}
+    <div style="font-family:'Bebas Neue',sans-serif;font-size:30px;letter-spacing:2px;color:var(--white);margin-bottom:16px;">Five Domains</div>
+    ${DOMAINS.map(d => `<div class="cycle-modal-domain"><div class="cycle-modal-domain-name">${d}</div><div class="cycle-modal-domain-score">${e.scores && e.scores[d] !== null && e.scores[d] !== undefined ? e.scores[d] : '—'}</div></div>`).join('')}
+    <div style="margin-top:24px;">
+      ${e.deepestAttention ? `<div class="cycle-modal-field"><div class="cycle-modal-field-label">Deepest Attention</div><div class="cycle-modal-field-value">${escHtml(e.deepestAttention)}</div></div>` : ''}
+      ${e.repairNext ? `<div class="cycle-modal-field"><div class="cycle-modal-field-label">Repair Next Cycle</div><div class="cycle-modal-field-value">${escHtml(e.repairNext)}</div></div>` : ''}
+      ${e.urgencyCheck ? `<div class="cycle-modal-field"><div class="cycle-modal-field-label">Urgency Check</div><div class="cycle-modal-field-value">${escHtml(e.urgencyCheck)}</div></div>` : ''}
+      ${e.sufficiency ? `<div class="cycle-modal-field" style="background:var(--dark);border-left:3px solid var(--gold);padding:16px 20px;"><div class="cycle-modal-field-label">Sufficiency Statement</div><div class="cycle-modal-field-value">Time is sufficient when I ${escHtml(e.sufficiency)}</div></div>` : ''}
+      ${e.intentions ? `<div class="cycle-modal-field"><div class="cycle-modal-field-label">Intentions</div><div class="cycle-modal-field-value">${escHtml(e.intentions)}</div></div>` : ''}
+      ${(e.protect || e.release) ? `<div style="display:grid;grid-template-columns:1fr 1fr;gap:2px;">
         ${e.protect ? `<div class="cycle-modal-field"><div class="cycle-modal-field-label">Protect</div><div class="cycle-modal-field-value">${escHtml(e.protect)}</div></div>` : ''}
         ${e.release ? `<div class="cycle-modal-field"><div class="cycle-modal-field-label">Release</div><div class="cycle-modal-field-value">${escHtml(e.release)}</div></div>` : ''}
-      </div>
-    ` : ''}
-  `;
+      </div>` : ''}
+    </div>`;
   document.getElementById('cycleModal').classList.add('open');
 }
 
-function closeCycleModal() {
-  document.getElementById('cycleModal').classList.remove('open');
+async function deleteCycleEntry(id) {
+  if (isGuest || !currentUser) {
+    let entries = JSON.parse(localStorage.getItem('32hg_cycles') || '[]');
+    entries = entries.filter(e => e.id != id);
+    localStorage.setItem('32hg_cycles', JSON.stringify(entries));
+  } else {
+    await sb.from('cycle_entries').delete().eq('id', id).eq('user_id', currentUser.id);
+  }
+  renderArchiveLists();
+  showToast('Deleted');
 }
 
-function deleteCycleEntry(id) {
-  let entries = JSON.parse(localStorage.getItem('32hg_cycles') || '[]');
-  entries = entries.filter(e => e.id != id);
-  localStorage.setItem('32hg_cycles', JSON.stringify(entries));
-  renderArchiveCycleList();
-  showToast('Cycle deleted');
+// =====================
+// TABS
+// =====================
+function switchTab(tab, btn) {
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('view-' + tab).classList.add('active');
+  btn.classList.add('active');
+  if (tab === 'archive') renderArchiveLists();
+}
+
+function switchArchive(type) {
+  document.getElementById('archiveDailyList').style.display = type === 'daily' ? 'block' : 'none';
+  document.getElementById('archiveCycleList').style.display = type === 'cycle' ? 'block' : 'none';
+  document.getElementById('archiveDailyBtn').classList.toggle('active', type === 'daily');
+  document.getElementById('archiveCycleBtn').classList.toggle('active', type === 'cycle');
 }
 
 // =====================
@@ -1171,7 +1492,8 @@ function formatDate(iso) {
 }
 
 function escHtml(str) {
-  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  if (!str) return '';
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
 function showToast(msg) {
