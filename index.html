@@ -1,113 +1,1182 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>32Hour Cycle Journal</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>32 Hour Group — Journal</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Bebas+Neue&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --black: #0a0a0a;
+  --dark: #111111;
+  --card: #161616;
+  --border: #2a2a2a;
+  --gold: #c9a84c;
+  --gold-dim: #8a6f30;
+  --white: #f0ece4;
+  --grey: #888880;
+  --light: #d4d0c8;
+  --red: #8b3a3a;
+  --green: #3a6b4a;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--black);
+  color: var(--white);
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 1000;
+  opacity: 0.4;
+}
+
+/* NAV */
+.app-nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 100;
+  padding: 16px 32px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(10,10,10,0.97);
+  border-bottom: 1px solid var(--border);
+}
+.app-nav-logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+}
+.app-nav-logo img {
+  height: 44px;
+  width: auto;
+}
+.app-nav-title {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--grey);
+}
+.app-nav-right {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+.nav-back-link {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--grey);
+  text-decoration: none;
+  transition: color 0.3s;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.nav-back-link::before { content: '←'; }
+.nav-back-link:hover { color: var(--gold); }
+
+/* TAB BAR */
+.tab-bar {
+  position: fixed;
+  top: 77px;
+  left: 0; right: 0;
+  z-index: 99;
+  background: var(--dark);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+}
+.tab-btn {
+  flex: 1;
+  padding: 16px;
+  background: none;
+  border: none;
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--grey);
+  cursor: pointer;
+  transition: all 0.3s;
+  border-bottom: 2px solid transparent;
+  -webkit-tap-highlight-color: transparent;
+}
+.tab-btn.active {
+  color: var(--gold);
+  border-bottom-color: var(--gold);
+  background: rgba(201,168,76,0.04);
+}
+.tab-btn:hover { color: var(--light); }
+
+/* MAIN */
+.app-main {
+  padding-top: 133px;
+  min-height: 100vh;
+}
+
+/* VIEWS */
+.view { display: none; padding: 32px; max-width: 800px; margin: 0 auto; }
+.view.active { display: block; }
+
+/* =====================
+   DAILY JOURNAL
+===================== */
+.journal-header {
+  margin-bottom: 32px;
+}
+.journal-date-display {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 8px;
+}
+.journal-heading {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 48px;
+  letter-spacing: 3px;
+  color: var(--white);
+  line-height: 1;
+}
+
+.prompt-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--gold);
+  padding: 20px 24px;
+  margin-bottom: 24px;
+}
+.prompt-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--gold-dim);
+  margin-bottom: 8px;
+}
+.prompt-text {
+  font-size: 18px;
+  font-style: italic;
+  font-weight: 300;
+  color: var(--light);
+  line-height: 1.5;
+}
+
+.journal-textarea {
+  width: 100%;
+  min-height: 280px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  color: var(--white);
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 19px;
+  font-weight: 300;
+  line-height: 1.8;
+  padding: 24px;
+  resize: vertical;
+  outline: none;
+  transition: border-color 0.3s;
+  margin-bottom: 8px;
+}
+.journal-textarea::placeholder { color: var(--grey); font-style: italic; }
+.journal-textarea:focus { border-color: var(--gold-dim); }
+
+.char-count {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 2px;
+  color: var(--grey);
+  text-align: right;
+  margin-bottom: 20px;
+}
+
+.btn-row {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 48px;
+  flex-wrap: wrap;
+}
+.btn-save {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  background: var(--gold);
+  color: var(--black);
+  padding: 14px 32px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s;
+  -webkit-tap-highlight-color: transparent;
+}
+.btn-save:hover { background: var(--white); }
+.btn-secondary {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  background: transparent;
+  color: var(--grey);
+  padding: 14px 24px;
+  border: 1px solid var(--border);
+  cursor: pointer;
+  transition: all 0.3s;
+  -webkit-tap-highlight-color: transparent;
+}
+.btn-secondary:hover { border-color: var(--gold-dim); color: var(--light); }
+
+/* SAVED ENTRIES */
+.entries-section-title {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border);
+}
+.entries-list { display: flex; flex-direction: column; gap: 2px; }
+.entry-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  padding: 20px 24px;
+  cursor: pointer;
+  transition: border-color 0.3s;
+}
+.entry-card:hover { border-color: var(--gold-dim); }
+.entry-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 8px;
+}
+.entry-date {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+.entry-delete {
+  background: none;
+  border: none;
+  color: var(--grey);
+  cursor: pointer;
+  font-size: 14px;
+  padding: 2px 6px;
+  transition: color 0.3s;
+  -webkit-tap-highlight-color: transparent;
+}
+.entry-delete:hover { color: #a05050; }
+.entry-preview {
+  font-size: 16px;
+  font-weight: 300;
+  font-style: italic;
+  color: var(--grey);
+  line-height: 1.5;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+/* ENTRY MODAL */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(10,10,10,0.95);
+  z-index: 500;
+  overflow-y: auto;
+  padding: 80px 24px 40px;
+}
+.modal-overlay.open { display: block; }
+.modal-content {
+  max-width: 720px;
+  margin: 0 auto;
+  background: var(--card);
+  border: 1px solid var(--border);
+  padding: 40px;
+  position: relative;
+}
+.modal-close {
+  position: absolute;
+  top: 20px; right: 20px;
+  background: none;
+  border: none;
+  color: var(--grey);
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 2px;
+  cursor: pointer;
+  padding: 8px;
+  -webkit-tap-highlight-color: transparent;
+}
+.modal-date {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 20px;
+}
+.modal-body {
+  font-size: 19px;
+  font-weight: 300;
+  line-height: 1.9;
+  color: var(--light);
+  white-space: pre-wrap;
+}
+
+/* =====================
+   CYCLE JOURNAL
+===================== */
+.cycle-section { margin-bottom: 36px; }
+.cycle-section-title {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 16px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--border);
+}
+
+/* RHYTHM SELECTOR */
+.rhythm-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 2px;
+  margin-bottom: 8px;
+}
+.rhythm-btn {
+  background: var(--card);
+  border: 1px solid var(--border);
+  color: var(--grey);
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  padding: 12px 6px;
+  cursor: pointer;
+  transition: all 0.3s;
+  text-align: center;
+  -webkit-tap-highlight-color: transparent;
+}
+.rhythm-btn:hover { border-color: var(--gold-dim); color: var(--light); }
+.rhythm-btn.selected {
+  background: var(--gold);
+  color: var(--black);
+  border-color: var(--gold);
+}
+
+/* DOMAIN SCORES */
+.domains-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.domain-row {
+  background: var(--card);
+  border: 1px solid var(--border);
+  padding: 16px 20px;
+  display: grid;
+  grid-template-columns: 140px 1fr auto;
+  gap: 16px;
+  align-items: center;
+  transition: border-color 0.3s;
+}
+.domain-row:hover { border-color: var(--border); }
+.domain-row-name {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 20px;
+  letter-spacing: 2px;
+  color: var(--white);
+}
+.domain-score-btns {
+  display: flex;
+  gap: 4px;
+}
+.score-btn {
+  width: 32px;
+  height: 32px;
+  background: var(--black);
+  border: 1px solid var(--border);
+  color: var(--grey);
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  -webkit-tap-highlight-color: transparent;
+}
+.score-btn:hover { border-color: var(--gold-dim); }
+.score-btn.selected {
+  background: var(--gold);
+  border-color: var(--gold);
+  color: var(--black);
+}
+.score-btn.selected-low {
+  background: #5a3030;
+  border-color: #7a4040;
+  color: var(--light);
+}
+.score-btn.selected-mid {
+  background: #4a4a20;
+  border-color: #6a6a30;
+  color: var(--light);
+}
+.score-btn.selected-high {
+  background: #2a5a3a;
+  border-color: #3a7a4a;
+  color: var(--light);
+}
+.domain-score-display {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 28px;
+  color: var(--gold);
+  letter-spacing: 2px;
+  min-width: 32px;
+  text-align: right;
+}
+
+/* CYCLE TEXTAREA */
+.cycle-textarea {
+  width: 100%;
+  min-height: 120px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  color: var(--white);
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 18px;
+  font-weight: 300;
+  line-height: 1.8;
+  padding: 20px;
+  resize: vertical;
+  outline: none;
+  transition: border-color 0.3s;
+  margin-bottom: 4px;
+}
+.cycle-textarea::placeholder { color: var(--grey); font-style: italic; }
+.cycle-textarea:focus { border-color: var(--gold-dim); }
+
+.input-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--grey);
+  margin-bottom: 8px;
+  display: block;
+}
+
+/* SUFFICIENCY STATEMENT */
+.sufficiency-block {
+  background: var(--dark);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--gold);
+  padding: 20px 24px;
+  margin-bottom: 4px;
+}
+.sufficiency-prefix {
+  font-size: 17px;
+  font-weight: 300;
+  font-style: italic;
+  color: var(--grey);
+  margin-bottom: 8px;
+}
+.sufficiency-input {
+  width: 100%;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--border);
+  color: var(--white);
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 19px;
+  font-style: italic;
+  font-weight: 300;
+  padding: 8px 0;
+  outline: none;
+  transition: border-color 0.3s;
+}
+.sufficiency-input::placeholder { color: var(--grey); }
+.sufficiency-input:focus { border-bottom-color: var(--gold); }
+
+/* CYCLE ENTRIES */
+.cycle-entry-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  padding: 24px;
+  cursor: pointer;
+  transition: border-color 0.3s;
+}
+.cycle-entry-card:hover { border-color: var(--gold-dim); }
+.cycle-entry-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 16px;
+}
+.cycle-entry-date {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+.cycle-entry-rhythm {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  background: var(--border);
+  color: var(--light);
+  padding: 4px 10px;
+}
+.cycle-domain-scores {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.domain-score-pill {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  background: var(--black);
+  border: 1px solid var(--border);
+  color: var(--grey);
+}
+.domain-score-pill.high { border-color: #3a7a4a; color: #6aaa7a; }
+.domain-score-pill.mid { border-color: #6a6a30; color: #aaaa60; }
+.domain-score-pill.low { border-color: #7a4040; color: #aa7070; }
+
+/* TOAST */
+.toast {
+  position: fixed;
+  bottom: 32px;
+  left: 50%;
+  transform: translateX(-50%) translateY(100px);
+  background: var(--gold);
+  color: var(--black);
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  padding: 14px 32px;
+  z-index: 9999;
+  transition: transform 0.4s ease;
+  pointer-events: none;
+}
+.toast.show { transform: translateX(-50%) translateY(0); }
+
+/* EMPTY STATE */
+.empty-state {
+  text-align: center;
+  padding: 60px 24px;
+  color: var(--grey);
+}
+.empty-state-icon { font-size: 40px; margin-bottom: 16px; opacity: 0.4; }
+.empty-state-text {
+  font-size: 17px;
+  font-style: italic;
+  font-weight: 300;
+  line-height: 1.6;
+}
+
+/* MODAL CYCLE DETAIL */
+.cycle-modal-domains {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin: 20px 0;
+}
+.cycle-modal-domain {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 16px;
+  background: var(--black);
+  border: 1px solid var(--border);
+}
+.cycle-modal-domain-name {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 18px;
+  letter-spacing: 2px;
+  color: var(--white);
+}
+.cycle-modal-domain-score {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 24px;
+  color: var(--gold);
+  letter-spacing: 2px;
+}
+.cycle-modal-field {
+  margin-bottom: 20px;
+}
+.cycle-modal-field-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--gold-dim);
+  margin-bottom: 8px;
+}
+.cycle-modal-field-value {
+  font-size: 18px;
+  font-weight: 300;
+  font-style: italic;
+  color: var(--light);
+  line-height: 1.7;
+}
+
+/* RESPONSIVE */
+@media (max-width: 600px) {
+  .view { padding: 20px 16px; }
+  .rhythm-grid { grid-template-columns: repeat(3, 1fr); }
+  .domain-row { grid-template-columns: 100px 1fr auto; }
+  .score-btn { width: 28px; height: 28px; font-size: 10px; }
+  .app-nav { padding: 12px 16px; }
+  .app-nav-logo img { height: 36px; }
+  .tab-bar { top: 69px; }
+  .app-main { padding-top: 121px; }
+}
+</style>
 </head>
 <body>
-  <div class="ambient"></div>
 
-  <main class="container">
-    <section class="hero">
-      <img src="assets/logo.png" alt="32HourGroup logo" class="site-logo">
-      <p class="eyebrow">32HourGroup</p>
-      <h1>Cycle Journal</h1>
-      <p class="subtext">Track your rhythm without pressure.</p>
-    </section>
+<!-- NAV -->
+<nav class="app-nav">
+  <a href="https://32hourgroup.com" class="app-nav-logo">
+    <img src="/assets/images/logo.png" alt="32 Hour Group">
+    <span class="app-nav-title">Journal</span>
+  </a>
+  <div class="app-nav-right">
+    <a href="https://32hourgroup.com" class="nav-back-link">Main Site</a>
+  </div>
+</nav>
 
-    <section class="surface note">
-      <span class="label">Cycle Note</span>
-      <p id="cycleNote"></p>
-    </section>
+<!-- TAB BAR -->
+<div class="tab-bar">
+  <button class="tab-btn active" onclick="switchTab('daily')">Daily Journal</button>
+  <button class="tab-btn" onclick="switchTab('cycle')">Cycle Reflection</button>
+  <button class="tab-btn" onclick="switchTab('archive')">Archive</button>
+</div>
 
-    <section class="surface">
-      <div class="section-header">
+<!-- MAIN -->
+<main class="app-main">
+
+  <!-- ===================== DAILY JOURNAL ===================== -->
+  <div class="view active" id="view-daily">
+
+    <div class="journal-header">
+      <div class="journal-date-display" id="todayDate"></div>
+      <div class="journal-heading">Daily Journal</div>
+    </div>
+
+    <div class="prompt-card">
+      <div class="prompt-label">Today's Prompt</div>
+      <div class="prompt-text" id="dailyPrompt">Loading...</div>
+    </div>
+
+    <textarea
+      class="journal-textarea"
+      id="dailyEntry"
+      placeholder="Write freely. This is observation, not evaluation..."
+      oninput="updateCharCount()"
+    ></textarea>
+    <div class="char-count"><span id="charCount">0</span> characters</div>
+
+    <div class="btn-row">
+      <button class="btn-save" onclick="saveDailyEntry()">Save Entry</button>
+      <button class="btn-secondary" onclick="newPrompt()">New Prompt</button>
+      <button class="btn-secondary" onclick="clearDaily()">Clear</button>
+    </div>
+
+    <div class="entries-section-title">Recent Entries</div>
+    <div class="entries-list" id="dailyEntriesList"></div>
+
+  </div>
+
+  <!-- ===================== CYCLE JOURNAL ===================== -->
+  <div class="view" id="view-cycle">
+
+    <div class="journal-header">
+      <div class="journal-date-display" id="cycleDate"></div>
+      <div class="journal-heading">Cycle Reflection</div>
+    </div>
+
+    <!-- RHYTHM -->
+    <div class="cycle-section">
+      <div class="cycle-section-title">How Did This Cycle Feel?</div>
+      <div class="rhythm-grid">
+        <button class="rhythm-btn" onclick="selectRhythm('Grounded')">Grounded</button>
+        <button class="rhythm-btn" onclick="selectRhythm('Balanced')">Balanced</button>
+        <button class="rhythm-btn" onclick="selectRhythm('Rushed')">Rushed</button>
+        <button class="rhythm-btn" onclick="selectRhythm('Fragmented')">Fragmented</button>
+        <button class="rhythm-btn" onclick="selectRhythm('Restless')">Restless</button>
+      </div>
+    </div>
+
+    <!-- DOMAINS -->
+    <div class="cycle-section">
+      <div class="cycle-section-title">Five Domains Check-In</div>
+      <div class="domains-grid" id="domainsGrid"></div>
+    </div>
+
+    <!-- REFLECTION FIELDS -->
+    <div class="cycle-section">
+      <div class="cycle-section-title">Reflection</div>
+
+      <label class="input-label">What received your deepest attention?</label>
+      <textarea class="cycle-textarea" id="deepestAttention" placeholder="What did you actually focus on this cycle?" style="min-height:90px;"></textarea>
+
+      <label class="input-label" style="margin-top:16px;">What needs repair next cycle?</label>
+      <textarea class="cycle-textarea" id="repairNext" placeholder="Repair is not punishment. It is restoration." style="min-height:90px;"></textarea>
+
+      <label class="input-label" style="margin-top:16px;">Where did false urgency appear?</label>
+      <textarea class="cycle-textarea" id="urgencyCheck" placeholder="Where did urgency appear that wasn't truly necessary?" style="min-height:90px;"></textarea>
+    </div>
+
+    <!-- SUFFICIENCY STATEMENT -->
+    <div class="cycle-section">
+      <div class="cycle-section-title">Sufficiency Statement</div>
+      <div class="sufficiency-block">
+        <div class="sufficiency-prefix">This cycle reminds me that time is sufficient when I…</div>
+        <input
+          type="text"
+          class="sufficiency-input"
+          id="sufficiencyStatement"
+          placeholder="complete the sentence..."
+        >
+      </div>
+    </div>
+
+    <!-- NEXT CYCLE INTENTIONS -->
+    <div class="cycle-section">
+      <div class="cycle-section-title">Intentions for Next Cycle</div>
+      <label class="input-label">Choose no more than three.</label>
+      <textarea class="cycle-textarea" id="intentions" placeholder="1.&#10;2.&#10;3." style="min-height:110px;"></textarea>
+
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:2px; margin-top:2px;">
         <div>
-          <span class="label">Quick Entry</span>
-          <h2>Notice the cycle.</h2>
+          <label class="input-label" style="margin-top:12px;">One thing to protect</label>
+          <input type="text" class="sufficiency-input" id="protect" placeholder="what will you guard..." style="background:var(--card); border:1px solid var(--border); padding:12px 16px; width:100%; font-family:'Cormorant Garamond',serif; font-size:17px; color:var(--white); outline:none;">
         </div>
-      </div>
-
-      <div class="grid">
-        <div class="field">
-          <label>Date</label>
-          <input type="date" id="date">
-        </div>
-
-        <div class="field">
-          <label>Current Rhythm</label>
-          <select id="mood">
-            <option>Grounded</option>
-            <option>Balanced</option>
-            <option>Rushed</option>
-            <option>Fragmented</option>
-            <option>Restless</option>
-          </select>
-        </div>
-      </div>
-
-      <div class="domains">
-        <div class="domain">
-          <span>Creation</span>
-          <input type="range" min="0" max="5" value="3" id="creation">
-        </div>
-
-        <div class="domain">
-          <span>Maintenance</span>
-          <input type="range" min="0" max="5" value="3" id="maintenance">
-        </div>
-
-        <div class="domain">
-          <span>Reflection</span>
-          <input type="range" min="0" max="5" value="3" id="reflection">
-        </div>
-
-        <div class="domain">
-          <span>Connection</span>
-          <input type="range" min="0" max="5" value="3" id="connection">
-        </div>
-
-        <div class="domain">
-          <span>Rest</span>
-          <input type="range" min="0" max="5" value="3" id="rest">
-        </div>
-      </div>
-
-      <div class="field">
-        <label>What did you notice?</label>
-        <textarea id="observation" placeholder="Patterns, wins, friction, urgency..."></textarea>
-      </div>
-
-      <div class="field">
-        <label>What needs repair next cycle?</label>
-        <textarea id="repair" placeholder="One small repair is enough."></textarea>
-      </div>
-
-      <div class="field">
-        <label>Next cycle intention</label>
-        <textarea id="intention" placeholder="What will you protect, release, or complete?"></textarea>
-      </div>
-
-      <button id="saveBtn">Save Cycle</button>
-    </section>
-
-    <section class="surface">
-      <div class="section-header">
         <div>
-          <span class="label">Archive</span>
-          <h2>Past Cycles</h2>
+          <label class="input-label" style="margin-top:12px;">One thing to release</label>
+          <input type="text" class="sufficiency-input" id="release" placeholder="what will you let go..." style="background:var(--card); border:1px solid var(--border); padding:12px 16px; width:100%; font-family:'Cormorant Garamond',serif; font-size:17px; color:var(--white); outline:none;">
         </div>
       </div>
+    </div>
 
-      <div id="entries"></div>
-    </section>
-  </main>
+    <div class="btn-row" style="margin-top:8px;">
+      <button class="btn-save" onclick="saveCycleEntry()">Save Cycle</button>
+      <button class="btn-secondary" onclick="clearCycle()">Clear</button>
+    </div>
 
-  <script src="app.js"></script>
+  </div>
+
+  <!-- ===================== ARCHIVE ===================== -->
+  <div class="view" id="view-archive">
+
+    <div class="journal-header">
+      <div class="journal-heading">Archive</div>
+    </div>
+
+    <div style="display:flex; gap:2px; margin-bottom:32px;">
+      <button class="tab-btn active" id="archiveDailyBtn" onclick="switchArchive('daily')" style="position:static; border-bottom:2px solid var(--gold); flex:1;">Daily</button>
+      <button class="tab-btn" id="archiveCycleBtn" onclick="switchArchive('cycle')" style="position:static; flex:1;">Cycles</button>
+    </div>
+
+    <div id="archiveDailyList"></div>
+    <div id="archiveCycleList" style="display:none;"></div>
+
+  </div>
+
+</main>
+
+<!-- ENTRY MODAL -->
+<div class="modal-overlay" id="entryModal">
+  <div class="modal-content">
+    <button class="modal-close" onclick="closeModal()">CLOSE ✕</button>
+    <div class="modal-date" id="modalDate"></div>
+    <div class="modal-body" id="modalBody"></div>
+  </div>
+</div>
+
+<!-- CYCLE MODAL -->
+<div class="modal-overlay" id="cycleModal">
+  <div class="modal-content">
+    <button class="modal-close" onclick="closeCycleModal()">CLOSE ✕</button>
+    <div id="cycleModalContent"></div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+// =====================
+// STATE
+// =====================
+const DOMAINS = ['Creation', 'Maintenance', 'Reflection', 'Connection', 'Rest'];
+const PROMPTS = [
+  "What received your deepest attention today?",
+  "Where did you feel most present — and where did you feel absent?",
+  "What would you do differently if you had moved more slowly?",
+  "What are you carrying that isn't yours to carry?",
+  "Where did urgency appear that wasn't truly necessary?",
+  "What did you create, build, or learn today?",
+  "Who needed your presence today — and did they receive it?",
+  "What does rest look like for you right now?",
+  "What would sufficiency feel like in this moment?",
+  "What pattern are you beginning to notice across cycles?",
+  "What is one thing you completed today — fully?",
+  "Where did you protect depth today? Where did you fail to?",
+  "What do you need to repair — not as punishment, but as restoration?",
+  "What is the difference between what was urgent and what was important today?",
+  "How did your body feel at the end of this cycle?"
+];
+
+let cycleScores = { Creation: null, Maintenance: null, Reflection: null, Connection: null, Rest: null };
+let selectedRhythm = null;
+let currentPromptIndex = 0;
+
+// =====================
+// INIT
+// =====================
+document.addEventListener('DOMContentLoaded', () => {
+  setDates();
+  loadPrompt();
+  renderDomains();
+  renderDailyEntries();
+  renderArchiveDailyList();
+  renderArchiveCycleList();
+});
+
+function setDates() {
+  const now = new Date();
+  const opts = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+  const formatted = now.toLocaleDateString('en-US', opts).toUpperCase();
+  document.getElementById('todayDate').textContent = formatted;
+  document.getElementById('cycleDate').textContent = formatted;
+}
+
+function loadPrompt() {
+  const saved = localStorage.getItem('32hg_prompt_index');
+  const savedDate = localStorage.getItem('32hg_prompt_date');
+  const today = new Date().toDateString();
+  if (savedDate !== today) {
+    currentPromptIndex = Math.floor(Math.random() * PROMPTS.length);
+    localStorage.setItem('32hg_prompt_index', currentPromptIndex);
+    localStorage.setItem('32hg_prompt_date', today);
+  } else {
+    currentPromptIndex = parseInt(saved || 0);
+  }
+  document.getElementById('dailyPrompt').textContent = PROMPTS[currentPromptIndex];
+}
+
+function newPrompt() {
+  currentPromptIndex = (currentPromptIndex + 1) % PROMPTS.length;
+  localStorage.setItem('32hg_prompt_index', currentPromptIndex);
+  document.getElementById('dailyPrompt').textContent = PROMPTS[currentPromptIndex];
+}
+
+// =====================
+// TABS
+// =====================
+function switchTab(tab) {
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('view-' + tab).classList.add('active');
+  event.target.classList.add('active');
+  if (tab === 'archive') {
+    renderArchiveDailyList();
+    renderArchiveCycleList();
+  }
+}
+
+function switchArchive(type) {
+  document.getElementById('archiveDailyList').style.display = type === 'daily' ? 'block' : 'none';
+  document.getElementById('archiveCycleList').style.display = type === 'cycle' ? 'block' : 'none';
+  document.getElementById('archiveDailyBtn').classList.toggle('active', type === 'daily');
+  document.getElementById('archiveCycleBtn').classList.toggle('active', type === 'cycle');
+  document.getElementById('archiveDailyBtn').style.borderBottom = type === 'daily' ? '2px solid var(--gold)' : '2px solid transparent';
+  document.getElementById('archiveCycleBtn').style.borderBottom = type === 'cycle' ? '2px solid var(--gold)' : '2px solid transparent';
+}
+
+// =====================
+// DAILY JOURNAL
+// =====================
+function updateCharCount() {
+  const len = document.getElementById('dailyEntry').value.length;
+  document.getElementById('charCount').textContent = len;
+}
+
+function saveDailyEntry() {
+  const text = document.getElementById('dailyEntry').value.trim();
+  if (!text) { showToast('Nothing to save'); return; }
+  const entries = JSON.parse(localStorage.getItem('32hg_daily') || '[]');
+  entries.unshift({
+    id: Date.now(),
+    date: new Date().toISOString(),
+    prompt: PROMPTS[currentPromptIndex],
+    text
+  });
+  localStorage.setItem('32hg_daily', JSON.stringify(entries));
+  document.getElementById('dailyEntry').value = '';
+  document.getElementById('charCount').textContent = '0';
+  renderDailyEntries();
+  renderArchiveDailyList();
+  showToast('Entry saved');
+}
+
+function clearDaily() {
+  document.getElementById('dailyEntry').value = '';
+  document.getElementById('charCount').textContent = '0';
+}
+
+function renderDailyEntries() {
+  const entries = JSON.parse(localStorage.getItem('32hg_daily') || '[]').slice(0, 5);
+  const list = document.getElementById('dailyEntriesList');
+  if (!entries.length) {
+    list.innerHTML = '<div class="empty-state"><div class="empty-state-icon">✍️</div><p class="empty-state-text">No entries yet. Begin writing.</p></div>';
+    return;
+  }
+  list.innerHTML = entries.map(e => `
+    <div class="entry-card" onclick="openEntry('${e.id}')">
+      <div class="entry-card-header">
+        <div class="entry-date">${formatDate(e.date)}</div>
+        <button class="entry-delete" onclick="event.stopPropagation(); deleteDailyEntry('${e.id}')">✕</button>
+      </div>
+      <div class="entry-preview">${escHtml(e.text)}</div>
+    </div>
+  `).join('');
+}
+
+function renderArchiveDailyList() {
+  const entries = JSON.parse(localStorage.getItem('32hg_daily') || '[]');
+  const list = document.getElementById('archiveDailyList');
+  if (!entries.length) {
+    list.innerHTML = '<div class="empty-state"><div class="empty-state-icon">📓</div><p class="empty-state-text">No daily entries yet.</p></div>';
+    return;
+  }
+  list.innerHTML = '<div class="entries-list">' + entries.map(e => `
+    <div class="entry-card" onclick="openEntry('${e.id}')">
+      <div class="entry-card-header">
+        <div class="entry-date">${formatDate(e.date)}</div>
+        <button class="entry-delete" onclick="event.stopPropagation(); deleteDailyEntry('${e.id}')">✕</button>
+      </div>
+      <div class="entry-preview">${escHtml(e.text)}</div>
+    </div>
+  `).join('') + '</div>';
+}
+
+function openEntry(id) {
+  const entries = JSON.parse(localStorage.getItem('32hg_daily') || '[]');
+  const e = entries.find(x => x.id == id);
+  if (!e) return;
+  document.getElementById('modalDate').textContent = formatDate(e.date);
+  document.getElementById('modalBody').innerHTML = `
+    <div style="font-family:'DM Mono',monospace; font-size:10px; letter-spacing:2px; color:var(--gold-dim); margin-bottom:20px; font-style:normal;">${escHtml(e.prompt)}</div>
+    ${escHtml(e.text)}
+  `;
+  document.getElementById('entryModal').classList.add('open');
+}
+
+function closeModal() {
+  document.getElementById('entryModal').classList.remove('open');
+}
+
+function deleteDailyEntry(id) {
+  let entries = JSON.parse(localStorage.getItem('32hg_daily') || '[]');
+  entries = entries.filter(e => e.id != id);
+  localStorage.setItem('32hg_daily', JSON.stringify(entries));
+  renderDailyEntries();
+  renderArchiveDailyList();
+  showToast('Entry deleted');
+}
+
+// =====================
+// CYCLE JOURNAL
+// =====================
+function renderDomains() {
+  const grid = document.getElementById('domainsGrid');
+  grid.innerHTML = DOMAINS.map(d => `
+    <div class="domain-row">
+      <div class="domain-row-name">${d}</div>
+      <div class="domain-score-btns">
+        ${[0,1,2,3,4,5].map(n => `
+          <button class="score-btn" id="score-${d}-${n}" onclick="setScore('${d}', ${n})">${n}</button>
+        `).join('')}
+      </div>
+      <div class="domain-score-display" id="score-display-${d}">—</div>
+    </div>
+  `).join('');
+}
+
+function setScore(domain, score) {
+  cycleScores[domain] = score;
+  [0,1,2,3,4,5].forEach(n => {
+    const btn = document.getElementById(`score-${domain}-${n}`);
+    btn.classList.remove('selected', 'selected-low', 'selected-mid', 'selected-high');
+  });
+  const btn = document.getElementById(`score-${domain}-${score}`);
+  if (score <= 2) btn.classList.add('selected-low');
+  else if (score <= 3) btn.classList.add('selected-mid');
+  else btn.classList.add('selected-high');
+  document.getElementById(`score-display-${domain}`).textContent = score;
+}
+
+function selectRhythm(r) {
+  selectedRhythm = r;
+  document.querySelectorAll('.rhythm-btn').forEach(b => {
+    b.classList.toggle('selected', b.textContent === r);
+  });
+}
+
+function saveCycleEntry() {
+  const entries = JSON.parse(localStorage.getItem('32hg_cycles') || '[]');
+  const entry = {
+    id: Date.now(),
+    date: new Date().toISOString(),
+    rhythm: selectedRhythm,
+    scores: { ...cycleScores },
+    deepestAttention: document.getElementById('deepestAttention').value.trim(),
+    repairNext: document.getElementById('repairNext').value.trim(),
+    urgencyCheck: document.getElementById('urgencyCheck').value.trim(),
+    sufficiency: document.getElementById('sufficiencyStatement').value.trim(),
+    intentions: document.getElementById('intentions').value.trim(),
+    protect: document.getElementById('protect').value.trim(),
+    release: document.getElementById('release').value.trim(),
+  };
+  entries.unshift(entry);
+  localStorage.setItem('32hg_cycles', JSON.stringify(entries));
+  renderArchiveCycleList();
+  clearCycle();
+  showToast('Cycle saved');
+}
+
+function clearCycle() {
+  cycleScores = { Creation: null, Maintenance: null, Reflection: null, Connection: null, Rest: null };
+  selectedRhythm = null;
+  renderDomains();
+  document.querySelectorAll('.rhythm-btn').forEach(b => b.classList.remove('selected'));
+  ['deepestAttention','repairNext','urgencyCheck','sufficiencyStatement','intentions','protect','release']
+    .forEach(id => { document.getElementById(id).value = ''; });
+}
+
+function renderArchiveCycleList() {
+  const entries = JSON.parse(localStorage.getItem('32hg_cycles') || '[]');
+  const list = document.getElementById('archiveCycleList');
+  if (!entries.length) {
+    list.innerHTML = '<div class="empty-state"><div class="empty-state-icon">⏳</div><p class="empty-state-text">No cycle reflections yet.</p></div>';
+    return;
+  }
+  list.innerHTML = '<div class="entries-list">' + entries.map(e => `
+    <div class="cycle-entry-card" onclick="openCycleEntry('${e.id}')">
+      <div class="cycle-entry-header">
+        <div class="cycle-entry-date">${formatDate(e.date)}</div>
+        <div style="display:flex; gap:8px; align-items:center;">
+          ${e.rhythm ? `<div class="cycle-entry-rhythm">${e.rhythm}</div>` : ''}
+          <button class="entry-delete" onclick="event.stopPropagation(); deleteCycleEntry('${e.id}')">✕</button>
+        </div>
+      </div>
+      <div class="cycle-domain-scores">
+        ${DOMAINS.map(d => {
+          const s = e.scores[d];
+          const cls = s === null ? '' : s >= 4 ? 'high' : s >= 3 ? 'mid' : 'low';
+          return `<div class="domain-score-pill ${cls}">${d} ${s !== null ? s : '—'}</div>`;
+        }).join('')}
+      </div>
+    </div>
+  `).join('') + '</div>';
+}
+
+function openCycleEntry(id) {
+  const entries = JSON.parse(localStorage.getItem('32hg_cycles') || '[]');
+  const e = entries.find(x => x.id == id);
+  if (!e) return;
+  document.getElementById('cycleModalContent').innerHTML = `
+    <div style="font-family:'DM Mono',monospace; font-size:10px; letter-spacing:3px; color:var(--gold); margin-bottom:4px;">${formatDate(e.date)}</div>
+    ${e.rhythm ? `<div style="font-family:'DM Mono',monospace; font-size:10px; letter-spacing:2px; color:var(--grey); margin-bottom:24px; text-transform:uppercase;">${e.rhythm}</div>` : ''}
+    <div style="font-family:'Bebas Neue',sans-serif; font-size:32px; letter-spacing:2px; color:var(--white); margin-bottom:20px;">Five Domains</div>
+    <div class="cycle-modal-domains">
+      ${DOMAINS.map(d => `
+        <div class="cycle-modal-domain">
+          <div class="cycle-modal-domain-name">${d}</div>
+          <div class="cycle-modal-domain-score">${e.scores[d] !== null ? e.scores[d] : '—'}</div>
+        </div>
+      `).join('')}
+    </div>
+    ${e.deepestAttention ? `<div class="cycle-modal-field"><div class="cycle-modal-field-label">Deepest Attention</div><div class="cycle-modal-field-value">${escHtml(e.deepestAttention)}</div></div>` : ''}
+    ${e.repairNext ? `<div class="cycle-modal-field"><div class="cycle-modal-field-label">Repair Next Cycle</div><div class="cycle-modal-field-value">${escHtml(e.repairNext)}</div></div>` : ''}
+    ${e.urgencyCheck ? `<div class="cycle-modal-field"><div class="cycle-modal-field-label">Urgency Check</div><div class="cycle-modal-field-value">${escHtml(e.urgencyCheck)}</div></div>` : ''}
+    ${e.sufficiency ? `<div class="cycle-modal-field" style="background:var(--dark); border-left:3px solid var(--gold); padding:16px 20px;"><div class="cycle-modal-field-label">Sufficiency Statement</div><div class="cycle-modal-field-value">Time is sufficient when I ${escHtml(e.sufficiency)}</div></div>` : ''}
+    ${e.intentions ? `<div class="cycle-modal-field"><div class="cycle-modal-field-label">Next Cycle Intentions</div><div class="cycle-modal-field-value">${escHtml(e.intentions)}</div></div>` : ''}
+    ${(e.protect || e.release) ? `
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:2px;">
+        ${e.protect ? `<div class="cycle-modal-field"><div class="cycle-modal-field-label">Protect</div><div class="cycle-modal-field-value">${escHtml(e.protect)}</div></div>` : ''}
+        ${e.release ? `<div class="cycle-modal-field"><div class="cycle-modal-field-label">Release</div><div class="cycle-modal-field-value">${escHtml(e.release)}</div></div>` : ''}
+      </div>
+    ` : ''}
+  `;
+  document.getElementById('cycleModal').classList.add('open');
+}
+
+function closeCycleModal() {
+  document.getElementById('cycleModal').classList.remove('open');
+}
+
+function deleteCycleEntry(id) {
+  let entries = JSON.parse(localStorage.getItem('32hg_cycles') || '[]');
+  entries = entries.filter(e => e.id != id);
+  localStorage.setItem('32hg_cycles', JSON.stringify(entries));
+  renderArchiveCycleList();
+  showToast('Cycle deleted');
+}
+
+// =====================
+// UTILS
+// =====================
+function formatDate(iso) {
+  return new Date(iso).toLocaleDateString('en-US', {
+    weekday: 'short', year: 'numeric', month: 'short', day: 'numeric'
+  }).toUpperCase();
+}
+
+function escHtml(str) {
+  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+</script>
 </body>
 </html>
