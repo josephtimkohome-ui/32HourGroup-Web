@@ -306,19 +306,7 @@ body::before {
   -webkit-tap-highlight-color: transparent;
 }
 .auth-btn-guest:hover { border-color: var(--gold-dim); color: var(--light); }
-.auth-toggle {
-  font-family: 'DM Mono', monospace;
-  font-size: 10px;
-  letter-spacing: 2px;
-  color: var(--gold);
-  cursor: pointer;
-  margin-top: 16px;
-  display: inline-block;
-  text-decoration: underline;
-  background: none;
-  border: none;
-  -webkit-tap-highlight-color: transparent;
-}
+
 .auth-error {
   font-family: 'DM Mono', monospace;
   font-size: 10px;
@@ -854,19 +842,9 @@ body::before {
     </button>
 
     <div class="auth-divider"><span>or</span></div>
-
-    <div id="emailForm">
-      <input type="email" class="auth-input" id="authEmail" placeholder="your@email.com">
-      <input type="password" class="auth-input" id="authPassword" placeholder="password">
-      <button class="auth-btn-email" onclick="signInEmail()" id="emailBtn">Sign In</button>
-      <button class="auth-toggle" onclick="toggleEmailMode()" id="emailToggle">No account? Sign up instead</button>
-    </div>
-
-    <div class="auth-error" id="authError"></div>
-
-    <div class="auth-divider"><span>or</span></div>
     <button class="auth-btn-guest" onclick="continueAsGuest()">Continue as Guest</button>
     <div style="font-family:'DM Mono',monospace; font-size:9px; letter-spacing:1px; color:var(--grey); margin-top:10px; line-height:1.5;">Guest entries are saved locally and may be lost if you clear your browser.</div>
+    <div class="auth-error" id="authError"></div>
   </div>
 </div>
 
