@@ -10,16 +10,29 @@
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 :root {
   --black: #0a0a0a;
-  --dark: #111111;
+  --dark: #0e0e0c;
   --card: #161616;
   --border: #2a2a2a;
   --gold: #c9a84c;
+  --gold-bright: #f0d479;
   --gold-dim: #8a6f30;
   --white: #f0ece4;
   --grey: #888880;
   --light: #d4d0c8;
+  /* Five Domains — shared with 32hourgroup.com */
+  --d-creation: #f0d479;
+  --d-maintenance: #d8b85a;
+  --d-reflection: #c9a84c;
+  --d-connection: #b08f3e;
+  --d-rest: #8a6f30;
+  --ease: cubic-bezier(.16,.84,.34,1);
+  --maxw: 1200px;
 }
 html { scroll-behavior: smooth; }
+a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 3px;
+}
 body {
   background: var(--black);
   color: var(--white);
@@ -92,10 +105,10 @@ body::before {
   border: none;
   padding: 8px 16px;
   cursor: pointer;
-  transition: all 0.3s;
+  transition: all 0.3s var(--ease);
   -webkit-tap-highlight-color: transparent;
 }
-.nav-auth-btn:hover { background: var(--white); }
+.nav-auth-btn:hover { background: var(--white); transform: translateY(-2px); }
 .nav-auth-btn.ghost {
   background: transparent;
   color: var(--grey);
@@ -134,8 +147,10 @@ body::before {
   padding: 6px 14px;
   cursor: pointer;
   white-space: nowrap;
+  transition: all 0.3s var(--ease);
   -webkit-tap-highlight-color: transparent;
 }
+.guest-banner-btn:hover { background: var(--white); transform: translateY(-2px); }
 
 /* TAB BAR */
 .tab-bar {
@@ -205,7 +220,15 @@ body::before {
   width: 100%;
   text-align: center;
 }
-.auth-logo { height: 200px; margin: 0 auto 28px; display: block; }
+.auth-logo { height: 200px; margin: 0 auto 28px; display: block; filter: drop-shadow(0 0 22px rgba(240,212,121,.28)); }
+.auth-tagline {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 14px;
+}
 .auth-title {
   font-family: 'Bebas Neue', sans-serif;
   font-size: 40px;
@@ -286,11 +309,11 @@ body::before {
   text-transform: uppercase;
   padding: 16px;
   cursor: pointer;
-  transition: all 0.3s;
+  transition: all 0.3s var(--ease);
   margin-bottom: 8px;
   -webkit-tap-highlight-color: transparent;
 }
-.auth-btn-email:hover { background: var(--light); }
+.auth-btn-email:hover { background: var(--light); transform: translateY(-2px); }
 .auth-btn-guest {
   width: 100%;
   background: transparent;
@@ -393,10 +416,10 @@ body::before {
   padding: 14px 32px;
   border: none;
   cursor: pointer;
-  transition: all 0.3s;
+  transition: all 0.3s var(--ease);
   -webkit-tap-highlight-color: transparent;
 }
-.btn-save:hover { background: var(--white); }
+.btn-save:hover { background: var(--white); transform: translateY(-2px); }
 .btn-secondary {
   font-family: 'DM Mono', monospace;
   font-size: 11px;
@@ -797,7 +820,7 @@ body::before {
   justify-content: center;
   gap: 24px;
 }
-.loading-logo { height: 100px; }
+.loading-logo { height: 100px; filter: drop-shadow(0 0 18px rgba(240,212,121,.25)); }
 .loading-text {
   font-family: 'DM Mono', monospace;
   font-size: 10px;
@@ -807,6 +830,42 @@ body::before {
   animation: pulse 1.5s ease infinite;
 }
 @keyframes pulse { 0%,100% { opacity: 0.4; } 50% { opacity: 1; } }
+
+/* FOOTER */
+.app-footer {
+  max-width: 800px;
+  margin: 64px auto 0;
+  padding: 36px 32px 56px;
+  border-top: 1px solid var(--border);
+  text-align: center;
+}
+.app-footer-doctrine {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--gold-dim);
+  margin-bottom: 14px;
+  line-height: 1.8;
+}
+.app-footer-link {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 22px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--white);
+  text-decoration: none;
+  transition: color 0.3s var(--ease);
+}
+.app-footer-link:hover { color: var(--gold); }
+.app-footer-copy {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--grey);
+  margin-top: 10px;
+}
 
 .empty-state { text-align: center; padding: 60px 24px; color: var(--grey); }
 .empty-state-icon { font-size: 40px; margin-bottom: 16px; opacity: 0.4; }
@@ -833,6 +892,7 @@ body::before {
 <div class="auth-screen" id="authScreen">
   <div class="auth-box">
     <img src="/assets/images/logo.png" alt="32 Hour Group" class="auth-logo">
+    <div class="auth-tagline">A day is 32 hours · Live accordingly</div>
     <div class="auth-title">Journal</div>
     <div class="auth-subtitle" id="authSubtitle">Your cycles. Your reflection. Your practice.</div>
 
@@ -968,6 +1028,13 @@ body::before {
     <div id="archiveCycleList" style="display:none;"></div>
   </div>
 
+  <!-- FOOTER -->
+  <footer class="app-footer">
+    <div class="app-footer-doctrine">Time Is Sufficient · Urgency Is Not Importance · Restore Depth</div>
+    <a href="https://32hourgroup.com" class="app-footer-link">32hourgroup.com</a>
+    <div class="app-footer-copy">© 2026 · Live Accordingly</div>
+  </footer>
+
 </main>
 
 <!-- MODALS -->
@@ -1001,6 +1068,14 @@ const sb = createClient(SUPABASE_URL, SUPABASE_KEY);
 // STATE
 // =====================
 const DOMAINS = ['Creation', 'Maintenance', 'Reflection', 'Connection', 'Rest'];
+// Each domain carries the same gold shade as the Five Domains on 32hourgroup.com
+const DOMAIN_COLORS = {
+  Creation: 'var(--d-creation)',
+  Maintenance: 'var(--d-maintenance)',
+  Reflection: 'var(--d-reflection)',
+  Connection: 'var(--d-connection)',
+  Rest: 'var(--d-rest)'
+};
 const PROMPTS = [
   "What received your deepest attention today?",
   "Where did you feel most present — and where did you feel absent?",
@@ -1326,8 +1401,8 @@ async function deleteDailyEntry(id) {
 // =====================
 function renderDomains() {
   document.getElementById('domainsGrid').innerHTML = DOMAINS.map(d => `
-    <div class="domain-row">
-      <div class="domain-row-name">${d}</div>
+    <div class="domain-row" style="border-left:3px solid ${DOMAIN_COLORS[d]};">
+      <div class="domain-row-name" style="color:${DOMAIN_COLORS[d]};">${d}</div>
       <div class="domain-score-btns">
         ${[0,1,2,3,4,5].map(n => `<button class="score-btn" id="score-${d}-${n}" onclick="setScore('${d}',${n})">${n}</button>`).join('')}
       </div>
@@ -1417,7 +1492,7 @@ async function openCycleEntry(id) {
     <div style="font-family:'DM Mono',monospace;font-size:10px;letter-spacing:3px;color:var(--gold);margin-bottom:4px;">${formatDate(e.date)}</div>
     ${e.rhythm ? `<div style="font-family:'DM Mono',monospace;font-size:10px;color:var(--grey);margin-bottom:24px;text-transform:uppercase;letter-spacing:2px;">${e.rhythm}</div>` : ''}
     <div style="font-family:'Bebas Neue',sans-serif;font-size:30px;letter-spacing:2px;color:var(--white);margin-bottom:16px;">Five Domains</div>
-    ${DOMAINS.map(d => `<div class="cycle-modal-domain"><div class="cycle-modal-domain-name">${d}</div><div class="cycle-modal-domain-score">${e.scores && e.scores[d] !== null && e.scores[d] !== undefined ? e.scores[d] : '—'}</div></div>`).join('')}
+    ${DOMAINS.map(d => `<div class="cycle-modal-domain" style="border-left:3px solid ${DOMAIN_COLORS[d]};"><div class="cycle-modal-domain-name" style="color:${DOMAIN_COLORS[d]};">${d}</div><div class="cycle-modal-domain-score">${e.scores && e.scores[d] !== null && e.scores[d] !== undefined ? e.scores[d] : '—'}</div></div>`).join('')}
     <div style="margin-top:24px;">
       ${e.deepestAttention ? `<div class="cycle-modal-field"><div class="cycle-modal-field-label">Deepest Attention</div><div class="cycle-modal-field-value">${escHtml(e.deepestAttention)}</div></div>` : ''}
       ${e.repairNext ? `<div class="cycle-modal-field"><div class="cycle-modal-field-label">Repair Next Cycle</div><div class="cycle-modal-field-value">${escHtml(e.repairNext)}</div></div>` : ''}
